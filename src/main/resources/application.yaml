@@ -1,0 +1,10 @@
+---
+spring:
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/fantasy"
+    username: "fantasy"
+    password: "fantasy"
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate

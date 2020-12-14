@@ -1,0 +1,12 @@
+version: "3.7"
+services:
+
+  postgres-db:
+    image: postgres:13-alpine
+    container_name: fantasy-postgres
+    environment:
+      - POSTGRES_USER=fantasy
+      - POSTGRES_PASSWORD=fantasy
+      - POSTGRES_DB=fantasy
+    ports:
+      - "5432:5432"

@@ -1,0 +1,36 @@
+package by.guz.fantasy.football.dto;
+
+import by.guz.fantasy.football.entity.enums.UserRoleEntity;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import java.time.Instant;
+
+public enum UserDto {;
+    private interface Id { @Positive Long getId(); }
+    private interface Username { @NotBlank String getUsername(); }
+    private interface Email { @NotNull String getEmail(); }
+    private interface Cash { @NotNull Long getCash(); }
+    private interface Role { @NotNull UserRoleEntity getRole(); }
+    private interface CreatedAt { @NotNull Instant getCreatedAt(); }
+    private interface UpdatedAt { Instant getUpdatedAt(); }
+
+    public enum Response {;
+
+        @Getter @Setter @NoArgsConstructor
+        public static class Default implements Id, Username, Email, Cash, Role, CreatedAt, UpdatedAt {
+            Long id;
+            String username;
+            String email;
+            Long cash;
+            UserRoleEntity role;
+            Instant createdAt;
+            Instant updatedAt;
+        }
+    }
+}
+
