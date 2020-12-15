@@ -5,9 +5,9 @@ services:
     image: postgres:13-alpine
     container_name: fantasy-postgres
     environment:
-      - POSTGRES_USER=fantasy
-      - POSTGRES_PASSWORD=fantasy
-      - POSTGRES_DB=fantasy
+      POSTGRES_USER: fantasy
+      POSTGRES_PASSWORD: fantasy
+      POSTGRES_DB: fantasy
     ports:
       - "5432:5432"
 
@@ -19,3 +19,15 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
       - "5050:80"
+
+  api:
+    build: .
+    container_name: fantasy-api
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/fantasy
+      DB_USER: fantasy
+      DB_PASSWORD: fantasy
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
