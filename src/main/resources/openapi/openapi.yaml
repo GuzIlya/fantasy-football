@@ -1,0 +1,290 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Fantasy Football API
+
+tags:
+  - name: Auth
+  - name: Users
+
+paths:
+
+  ##################################################
+  # Auth API
+  ##################################################
+
+  /api/v1/auth/signup:
+    post:
+      operationId: signUp
+      summary: Sign up a new user
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignUpRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "409":
+          $ref: "#/components/responses/Conflict"
+
+  /api/v1/auth/login:
+    post:
+      operationId: login
+      summary: Login user
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Token"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /api/v1/auth/refresh-token:
+    post:
+      operationId: refreshToken
+      summary: Refresh token pair
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Token"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Token"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  ##################################################
+  # Users API
+  ##################################################
+
+  /api/v1/users:
+    get:
+      operationId: getAllUsers
+      summary: Get list of users
+      security:
+        - bearerAuth: []
+      tags:
+        - Users
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+components:
+
+  schemas:
+
+    SignUpRequest:
+      required:
+        - username
+        - password
+        - email
+      properties:
+        username:
+          type: string
+          example: "shelpen"
+        password:
+          type: string
+          example: "zxc123"
+        email:
+          type: string
+          example: "shelpen123@gmail.com"
+
+    LoginRequest:
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    User:
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        email:
+          type: string
+        cash:
+          type: integer
+          format: int64
+        role:
+          $ref: "#/components/schemas/UserRole"
+        createdAt:
+          type: string
+          format: "date-time"
+        updatedAt:
+          type: string
+          format: "date-time"
+
+    UserRole:
+      type: string
+      enum:
+        - "USER"
+        - "ADMIN"
+
+    Error:
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+          format: int32
+          minimum: 100
+          maximum: 600
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri
+        violations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Violation"
+
+    Violation:
+      properties:
+        field:
+          type: string
+        message:
+          type: string
+    Token:
+      required:
+        - refreshToken
+      properties:
+        issuedAt:
+          type: integer
+          format: int64
+        accessToken:
+          type: string
+        accessExpiresIn:
+          type: integer
+          format: int64
+        refreshToken:
+          type: string
+        refreshExpiresIn:
+          type: integer
+          format: int64
+
+  securitySchemes:
+
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+
+    BadRequest:
+      description: Request params or body validation failed
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    Conflict:
+      description: The request could not be completed due to a conflict with the current state
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    Forbidden:
+      description: Wrong permission to access this resource
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    NotFound:
+      description: Resource could not be found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    ServiceUnavailable:
+      description: Remote web server is temporarily unable to handle a request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    Unauthorized:
+      description: Missing authorization information
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+  parameters:
+
+    UserIdPathParameter:
+      in: path
+      name: userId
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+    PlayerIdPathParameter:
+      in: path
+      name: playerId
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+    TeamIdPathParameter:
+      in: path
+      name: teamId
+      required: true
+      schema:
+        type: string
+        format: uuid
