@@ -23,4 +23,10 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
             "AND deleted_at IS NULL ",
             nativeQuery = true)
     Optional<UserEntity> findOneByUsername(@Param("username") String username);
+
+    @Query(value = "SELECT * FROM fantasy_user " +
+            "WHERE email = :email " +
+            "AND deleted_at IS NULL ",
+            nativeQuery = true)
+    Optional<UserEntity> findOneByEmail(@Param("email") String email);
 }

@@ -14,3 +14,5 @@ app:
     base64-secret: "5Gd3F99LKe2VfDN0bMNtASeldaw9kH1854XMiTbkd57M0b99clYPcGp7KWDjjE7N8Wu2cItmAjyExEyjtVyBtA=="
     access-token-validity: 3600
     refresh-token-validity: 86400
+  game:
+    start-cash: 100

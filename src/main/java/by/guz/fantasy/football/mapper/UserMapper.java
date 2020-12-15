@@ -8,14 +8,15 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-import java.util.UUID;
-
 @Mapper
 public interface UserMapper {
     UserMapper USER_MAPPER = Mappers.getMapper(UserMapper.class);
 
     UserDto.Response.Default toUserDtoDefault(UserEntity source);
 
+    @Mapping(target = "email", ignore = true)
+    @Mapping(target = "passwordHash", ignore = true)
+    UserEntity toUserEntity(UserDto.Request.SignUp source);
 
     @Mapping(target = "userId", source = "userId")
     @Mapping(target = "role", source = "role")
@@ -25,4 +26,5 @@ public interface UserMapper {
     @Mapping(target = "userId", source = "id")
     @Mapping(target = "authorities", ignore = true)
     UserDetailsImpl toUserDetails(UserEntity userEntity);
+
 }

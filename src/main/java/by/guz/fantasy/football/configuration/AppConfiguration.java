@@ -16,6 +16,15 @@ public class AppConfiguration {
 
     private Jwt jwt = new Jwt();
 
+    private Game game = new Game();
+
+    @Getter
+    @Setter
+    public static class Game {
+
+        private Long startCash;
+    }
+
     @Getter
     @Setter
     public static class Jwt {

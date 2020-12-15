@@ -19,4 +19,4 @@ CREATE TABLE fantasy_user
 -- Password: Admin
 INSERT INTO fantasy_user(username, email, role, cash, password_hash)
 VALUES ('Admin', 'admin@domain.com', 'ADMIN', 100,
-        '$2y$12$F/ZPFEi/ycQ7Pqa2SEqOpOn2neHdtO05poh/y.DlhelCckHXwOVLK ')
+        '$2a$10$4yAqcjeyVG/1Lqg/W1uwNuO6CsP7f4cnZyqF7sOZ1/TS9zCPipzdm')

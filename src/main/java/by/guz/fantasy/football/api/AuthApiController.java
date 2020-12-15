@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.NOT_IMPLEMENTED;
 
 @RestController
 @AllArgsConstructor
@@ -27,7 +26,8 @@ public class AuthApiController {
 
     @PostMapping("/signup")
     public ResponseEntity<UserDto.Response.Default> signUp(@Valid @RequestBody final UserDto.Request.SignUp body) {
-        return new ResponseEntity<>(NOT_IMPLEMENTED);
+        UserDto.Response.Default user = authService.signUp(body);
+        return new ResponseEntity<>(user, CREATED);
     }
 
     @PostMapping("/login")
@@ -38,7 +38,8 @@ public class AuthApiController {
 
     @PostMapping("/refresh-token")
     public ResponseEntity<TokenDto.Default> refreshToken(@Valid @RequestBody final TokenDto.Default body) {
-        return new ResponseEntity<>(NOT_IMPLEMENTED);
+        TokenDto.Default token = authService.refreshToken(body);
+        return new ResponseEntity<>(token, CREATED);
     }
 
 }
