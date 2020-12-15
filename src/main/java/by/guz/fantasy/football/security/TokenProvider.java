@@ -7,11 +7,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public interface TokenProvider {
 
-    TokenDto.Response.Default createToken(UserEntity userEntity);
+    TokenDto.Default createToken(UserEntity userEntity);
 
-    TokenDto.Response.Default createToken(UserDetails userDetails);
+    TokenDto.Default createToken(UserDetails userDetails);
 
-    TokenDto.Response.Default refreshToken(String refreshToken);
+    TokenDto.Default refreshToken(String refreshToken);
 
     UserDetails buildUserDetailsByToken(String token);
 

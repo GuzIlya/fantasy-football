@@ -1,8 +1,6 @@
 package by.guz.fantasy.football.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 
@@ -13,17 +11,12 @@ public enum TokenDto {;
     private interface RefreshToken { @NotNull String getRefreshToken(); }
     private interface RefreshExpiresIn { Long getRefreshExpiresIn(); }
 
-    public enum Response {;
-
-        @Getter
-        @Setter
-        @NoArgsConstructor
-        public static class Default implements IssuedAt, AccessToken, AccessExpiresIn, RefreshToken, RefreshExpiresIn {
-            Long issuedAt;
-            String accessToken;
-            Long accessExpiresIn;
-            String refreshToken;
-            Long refreshExpiresIn;
-        }
+    @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+    public static class Default implements IssuedAt, AccessToken, AccessExpiresIn, RefreshToken, RefreshExpiresIn {
+        Long issuedAt;
+        String accessToken;
+        Long accessExpiresIn;
+        String refreshToken;
+        Long refreshExpiresIn;
     }
 }

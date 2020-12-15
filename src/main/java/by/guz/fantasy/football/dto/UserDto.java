@@ -13,6 +13,7 @@ import java.time.Instant;
 public enum UserDto {;
     private interface Id { @Positive Long getId(); }
     private interface Username { @NotBlank String getUsername(); }
+    private interface Password { @NotBlank String getPassword(); }
     private interface Email { @NotNull String getEmail(); }
     private interface Cash { @NotNull Long getCash(); }
     private interface Role { @NotNull UserRoleEntity getRole(); }
@@ -32,5 +33,22 @@ public enum UserDto {;
             Instant updatedAt;
         }
     }
+
+    public enum Request {;
+
+        @Getter @Setter @NoArgsConstructor
+        public static class SignUp implements Username, Password, Email {
+            String username;
+            String password;
+            String email;
+        }
+
+        @Getter @Setter @NoArgsConstructor
+        public static class Login implements Username, Password {
+            String username;
+            String password;
+        }
+    }
+
 }
 
