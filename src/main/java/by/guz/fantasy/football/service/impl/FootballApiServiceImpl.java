@@ -23,6 +23,16 @@ public class FootballApiServiceImpl implements FootballApiService {
     }
 
     @Override
+    public JsonNode getPlayersWithPagination(Integer page) {
+        return webClient
+                .get()
+                .uri("players?league=39&season=2020&page=" + page)
+                .retrieve()
+                .bodyToMono(JsonNode.class)
+                .block();
+    }
+
+    @Override
     public JsonNode getTeams() {
         return webClient
                 .get()

@@ -6,6 +6,8 @@ public interface FootballApiService {
 
     JsonNode getPlayers();
 
+    JsonNode getPlayersWithPagination(Integer page);
+
     JsonNode getTeams();
 
 }

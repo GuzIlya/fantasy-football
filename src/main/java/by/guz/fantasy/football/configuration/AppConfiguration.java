@@ -24,7 +24,8 @@ public class AppConfiguration {
     @Setter
     public static class Game {
 
-        private Double startCash;
+        private Double startCash = 100.0;
+        private Double defaultCost = 0.0;
     }
 
     @Getter

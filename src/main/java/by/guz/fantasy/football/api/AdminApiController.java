@@ -1,9 +1,9 @@
 package by.guz.fantasy.football.api;
 
+import by.guz.fantasy.football.dto.PlayerDto;
 import by.guz.fantasy.football.dto.TeamDto;
 import by.guz.fantasy.football.service.AdminService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,14 +24,14 @@ public class AdminApiController {
     private final AdminService adminService;
 
     @PostMapping("/players/update")
-    public ResponseEntity<JsonNode> updatePlayers() {
-        JsonNode node = adminService.updatePlayers();
-        return new ResponseEntity<>(node, OK);
+    public ResponseEntity<List<PlayerDto.Response.Default>> updatePlayers() throws JsonProcessingException {
+        List<PlayerDto.Response.Default> players = adminService.updatePlayers();
+        return new ResponseEntity<>(players, OK);
     }
 
     @PostMapping("/teams/update")
     public ResponseEntity<List<TeamDto.Response.Default>> updateTeams() throws JsonProcessingException {
-        List<TeamDto.Response.Default> node = adminService.updateTeams();
-        return new ResponseEntity<>(node, OK);
+        List<TeamDto.Response.Default> teams = adminService.updateTeams();
+        return new ResponseEntity<>(teams, OK);
     }
 }

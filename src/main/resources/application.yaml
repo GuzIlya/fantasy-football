@@ -16,6 +16,7 @@ app:
     refresh-token-validity: 86400
   game:
     start-cash: 100
+    default-cost: 0
   api-football:
     enable: true
     base-url: "https://v3.football.api-sports.io/"

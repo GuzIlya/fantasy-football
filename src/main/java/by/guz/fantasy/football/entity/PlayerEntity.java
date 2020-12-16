@@ -29,10 +29,10 @@ public class PlayerEntity extends AbstractBaseEntity {
     private String name;
 
     @Column(name = "first_name", nullable = false)
-    private String firstName;
+    private String firstname;
 
     @Column(name = "last_name", nullable = false)
-    private String lastName;
+    private String lastname;
 
     @Column(name = "birthdate")
     @Temporal(TemporalType.DATE)
