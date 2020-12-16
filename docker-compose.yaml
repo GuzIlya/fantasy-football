@@ -1,15 +1,15 @@
 version: "3.7"
 services:
 
-  postgres-test:
-    image: postgres:13-alpine
-    container_name: fantasy-postgres-test
-    environment:
-      POSTGRES_USER: fantasy
-      POSTGRES_PASSWORD: fantasy
-      POSTGRES_DB: fantasy
-    ports:
-      - "5433:5432"
+#  postgres-test:
+#    image: postgres:13-alpine
+#    container_name: fantasy-postgres-test
+#    environment:
+#      POSTGRES_USER: fantasy
+#      POSTGRES_PASSWORD: fantasy
+#      POSTGRES_DB: fantasy
+#    ports:
+#      - "5433:5432"
 
   postgres:
     image: postgres:13-alpine
@@ -21,14 +21,14 @@ services:
     ports:
       - "5432:5432"
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: fantasy-pgadmin
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    ports:
-      - "5050:80"
+#  pgadmin:
+#    image: dpage/pgadmin4
+#    container_name: fantasy-pgadmin
+#    environment:
+#      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+#      PGADMIN_DEFAULT_PASSWORD: admin
+#    ports:
+#      - "5050:80"
 
   api:
     build: .
