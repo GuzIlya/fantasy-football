@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,13 +23,13 @@ public class AdminApiController {
 
     private final AdminService adminService;
 
-    @GetMapping("/players/update")
+    @PostMapping("/players/update")
     public ResponseEntity<JsonNode> updatePlayers() {
         JsonNode node = adminService.updatePlayers();
         return new ResponseEntity<>(node, OK);
     }
 
-    @GetMapping("/teams/update")
+    @PostMapping("/teams/update")
     public ResponseEntity<List<TeamDto.Response.Default>> updateTeams() throws JsonProcessingException {
         List<TeamDto.Response.Default> node = adminService.updateTeams();
         return new ResponseEntity<>(node, OK);

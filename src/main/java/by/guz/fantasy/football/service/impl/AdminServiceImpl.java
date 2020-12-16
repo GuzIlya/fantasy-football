@@ -1,7 +1,9 @@
 package by.guz.fantasy.football.service.impl;
 
+import by.guz.fantasy.football.configuration.AppConfiguration;
 import by.guz.fantasy.football.dto.TeamDto;
 import by.guz.fantasy.football.entity.TeamEntity;
+import by.guz.fantasy.football.exception.ConflictException;
 import by.guz.fantasy.football.repository.TeamRepository;
 import by.guz.fantasy.football.service.AdminService;
 import by.guz.fantasy.football.service.FootballApiService;
@@ -17,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static by.guz.fantasy.football.exception.Constants.EXTERNAL_API_UNABLE_CONFLICT;
 import static by.guz.fantasy.football.mapper.TeamMapper.TEAM_MAPPER;
 
 @Service
@@ -26,6 +29,7 @@ public class AdminServiceImpl implements AdminService {
 
     private final FootballApiService footballApiService;
     private final TeamRepository teamRepository;
+    private final AppConfiguration appConfiguration;
 
     @Override
     public JsonNode updatePlayers() {
@@ -35,6 +39,9 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional
     public List<TeamDto.Response.Default> updateTeams() throws JsonProcessingException {
+        if (!appConfiguration.getApiFootball().isEnable())
+            throw new ConflictException(EXTERNAL_API_UNABLE_CONFLICT);
+
         JsonNode node = footballApiService.getTeams();
 
         TeamDto.External.DefaultList teams = new ObjectMapper().treeToValue(node, TeamDto.External.DefaultList.class);

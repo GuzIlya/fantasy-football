@@ -13,4 +13,5 @@ public class Constants {
 
     public static final String USER_EMAIL_CONFLICT = "User with such email already exists.";
     public static final String USER_USERNAME_CONFLICT = "User with such username already exists.";
+    public static final String EXTERNAL_API_UNABLE_CONFLICT = "Processing this endpoint requires connection to external API, which is disabled in server.";
 }

@@ -18,6 +18,8 @@ public class AppConfiguration {
 
     private Game game = new Game();
 
+    private ApiFootball apiFootball = new ApiFootball();
+
     @Getter
     @Setter
     public static class Game {
@@ -36,6 +38,22 @@ public class AppConfiguration {
 
         private long refreshTokenValidity;
 
+    }
+
+    @Getter
+    @Setter
+    public static class ApiFootball {
+
+        @NotBlank
+        private String baseUrl;
+
+        @NotBlank
+        private String host;
+
+        @NotBlank
+        private String key;
+
+        private boolean enable = false;
     }
 
 }
