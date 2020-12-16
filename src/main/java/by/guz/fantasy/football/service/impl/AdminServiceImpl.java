@@ -45,7 +45,7 @@ public class AdminServiceImpl implements AdminService {
         JsonNode node = footballApiService.getTeams();
 
         TeamDto.External.DefaultList teams = new ObjectMapper().treeToValue(node, TeamDto.External.DefaultList.class);
-        if (teams != null && teams.getResponse() != null)
+        if (teams != null && !teams.getResponse().isEmpty())
             for (TeamDto.External.DefaultCover team : teams.getResponse()) {
                 Optional<TeamEntity> existing = teamRepository.findOneByExternalId(team.getTeam().getId());
                 if (existing.isPresent()) {

@@ -24,7 +24,7 @@ public class AppConfiguration {
     @Setter
     public static class Game {
 
-        private Long startCash;
+        private Double startCash;
     }
 
     @Getter

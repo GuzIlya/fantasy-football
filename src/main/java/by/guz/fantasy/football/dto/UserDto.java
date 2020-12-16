@@ -15,7 +15,7 @@ public enum UserDto {;
     private interface Username { @NotBlank String getUsername(); }
     private interface Password { @NotBlank String getPassword(); }
     private interface Email { @NotNull String getEmail(); }
-    private interface Cash { @NotNull Long getCash(); }
+    private interface Cash { @NotNull Double getCash(); }
     private interface Role { @NotNull UserRoleEntity getRole(); }
     private interface CreatedAt { @NotNull Instant getCreatedAt(); }
     private interface UpdatedAt { Instant getUpdatedAt(); }
@@ -27,7 +27,7 @@ public enum UserDto {;
             Long id;
             String username;
             String email;
-            Long cash;
+            Double cash;
             UserRoleEntity role;
             Instant createdAt;
             Instant updatedAt;

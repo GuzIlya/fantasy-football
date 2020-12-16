@@ -35,7 +35,7 @@ public class UserEntity extends AbstractBaseEntity {
     private UserRoleEntity role;
 
     @Column(name = "cash", nullable = false)
-    private Long cash;
+    private Double cash;
 
     @Column (name = "password_hash", nullable = false)
     private String passwordHash;

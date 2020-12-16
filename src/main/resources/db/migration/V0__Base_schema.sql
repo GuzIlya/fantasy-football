@@ -9,7 +9,7 @@ CREATE TABLE fantasy_user
     username      TEXT                      NOT NULL,
     email         CITEXT                    NOT NULL,
     role          USER_ROLE                 NOT NULL,
-    cash          BIGINT                    NOT NULL,
+    cash          FLOAT                     NOT NULL,
     password_hash TEXT                      NOT NULL,
     created_at    TIMESTAMPTZ DEFAULT now() NOT NULL,
     updated_at    TIMESTAMPTZ,
