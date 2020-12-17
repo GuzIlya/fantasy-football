@@ -2,10 +2,26 @@ openapi: 3.0.0
 info:
   version: 1.0.0
   title: Fantasy Football API
+  description: |
+    # Введение
+    Данное API реализует демо-версию футбольной менеджера, прогресс в котором зависит от реальных результатов футболистов.
+
+    *Разработка API не завершена и находится в процессе дополнения. Некоторые запросы могут быть ещё не реализованы (501 Not Implemented).*
+
+    # Аутентификация
+    После успешного логина нужно сохранить полученные Access/Refresh токены.
+    Все последующие запросы выполнять с заголовком **Authorization** формата:
+    **Bearer *AccessToken***.
+
+    Access токен имеет срок жизни (1 час по умолчанию). По истечении срока последующие запросы с этим токеном в заголовке будут возвращать 401 Unauthorized. Для продолжения работы с API необходимо получить новую пару Access/Refresh токенов передав Refresh токен с действующим сроком жизни (1 день по умолчанию). Если срок жизни Refresh токена истек - необходимо заново произвести авторизацию.
+
+
 
 tags:
   - name: Auth
   - name: Users
+  - name: Players
+  - name: Admin
 
 paths:
 
@@ -16,7 +32,7 @@ paths:
   /api/v1/auth/signup:
     post:
       operationId: signUp
-      summary: Sign up a new user
+      summary: Регистрация нового пользователя
       tags:
         - Auth
       requestBody:
@@ -40,7 +56,7 @@ paths:
   /api/v1/auth/login:
     post:
       operationId: login
-      summary: Login user
+      summary: Логин
       tags:
         - Auth
       requestBody:
@@ -64,7 +80,7 @@ paths:
   /api/v1/auth/refresh-token:
     post:
       operationId: refreshToken
-      summary: Refresh token pair
+      summary: Обновление пары токенов
       tags:
         - Auth
       requestBody:
@@ -92,7 +108,7 @@ paths:
   /api/v1/users:
     get:
       operationId: getAllUsers
-      summary: Get list of users
+      summary: Получение списка пользователей
       security:
         - bearerAuth: []
       tags:
@@ -108,6 +124,128 @@ paths:
                   $ref: "#/components/schemas/User"
         "401":
           $ref: "#/components/responses/Unauthorized"
+
+
+  ##################################################
+  # Players API
+  ##################################################
+
+  /api/v1/players:
+    get:
+      operationId: getAllPlayers
+      summary: Получение списка игроков
+      security:
+        - bearerAuth: []
+      tags:
+        - Players
+      parameters:
+        - name: page
+          in: query
+          description: Номер страницы (используется для пагинации)
+          schema:
+            type: string
+            minimum: 1
+            default: 1
+        - name: size
+          in: query
+          description: Количество игроков на одной странице
+          schema:
+            type: string
+            minimum: 10
+            maximum: 30
+            default: 10
+        - name: search
+          in: query
+          description: Имя игрока (точное совпадение необязательно)
+          schema:
+            type: string
+            minimum: 3
+        - name: minAge
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: maxAge
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: nationality
+          in: query
+          description: Национальность игрока (точное совпадение обязательно)
+          schema:
+            type: string
+        - name: minCost
+          in: query
+          schema:
+            type: number
+            format: double
+        - name: maxCost
+          in: query
+          schema:
+            type: number
+            format: double
+        - name: team
+          in: query
+          description: Id команды
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  players:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Player"
+                  paging:
+                    $ref: "#/components/schemas/Pagination"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+
+  ##################################################
+  # Admin API
+  ##################################################
+
+  /api/v1/admin/players/update:
+    post:
+      operationId: updatePlayers
+      summary: Обновление игроков в соотвествии с внешним API
+      security:
+        - bearerAuth: []
+      tags:
+        - Admin
+      responses:
+        "201":
+          description: Created
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /api/v1/admin/teams/update:
+    post:
+      operationId: updateTeams
+      summary: Обновление команд в соотвествии с внешним API
+      security:
+        - bearerAuth: []
+      tags:
+        - Admin
+      responses:
+        "201":
+          description: Created
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
 
 components:
 
@@ -127,6 +265,7 @@ components:
           example: "zxc123"
         email:
           type: string
+          format: email
           example: "shelpen123@gmail.com"
 
     LoginRequest:
@@ -142,15 +281,16 @@ components:
     User:
       properties:
         id:
-          type: string
-          format: uuid
+          type: integer
+          format: int64
         username:
           type: string
         email:
           type: string
+          format: email
         cash:
-          type: integer
-          format: int64
+          type: number
+          format: double
         role:
           $ref: "#/components/schemas/UserRole"
         createdAt:
@@ -165,6 +305,59 @@ components:
       enum:
         - "USER"
         - "ADMIN"
+
+    Player:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        firstname:
+          type: string
+        lastname:
+          type: string
+        birthdate:
+          type: string
+          format: date
+        nationality:
+          type: string
+        cost:
+          type: number
+          format: double
+        height:
+          type: string
+        weight:
+          type: string
+        injured:
+          type: boolean
+        photo:
+          type: string
+        team:
+          $ref: "#/components/schemas/Team"
+
+    Pagination:
+      properties:
+        current:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int32
+
+    Team:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        country:
+          type: string
+        founded:
+          type: string
+        logo:
+          type: string
 
     Error:
       properties:
@@ -270,21 +463,21 @@ components:
       name: userId
       required: true
       schema:
-        type: string
-        format: uuid
+        type: integer
+        format: int64
 
     PlayerIdPathParameter:
       in: path
       name: playerId
       required: true
       schema:
-        type: string
-        format: uuid
+        type: integer
+        format: int64
 
     TeamIdPathParameter:
       in: path
       name: teamId
       required: true
       schema:
-        type: string
-        format: uuid
+        type: integer
+        format: int64

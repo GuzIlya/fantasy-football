@@ -32,7 +32,7 @@ public class PlayerApiController {
             @Size(min = 3) @Valid @RequestParam(value = "search", required = false) String search,
             @RequestParam(value = "minAge", required = false) Integer minAge,
             @RequestParam(value = "maxAge", required = false) Integer maxAge,
-            @Size(min = 3) @Valid @RequestParam(value = "nationality", required = false) String nationality,
+            @RequestParam(value = "nationality", required = false) String nationality,
             @RequestParam(value = "minCost", required = false) Double minCost,
             @RequestParam(value = "maxCost", required = false) Double maxCost,
             @RequestParam(value = "team", required = false) Long teamId) {
