@@ -21,6 +21,7 @@ tags:
   - name: Auth
   - name: Users
   - name: Players
+  - name: Teams
   - name: Admin
 
 paths:
@@ -210,6 +211,30 @@ paths:
         "401":
           $ref: "#/components/responses/Unauthorized"
 
+
+  ##################################################
+  # Users API
+  ##################################################
+
+  /api/v1/teams:
+    get:
+      operationId: getAllTeams
+      summary: Получение списка команд
+      security:
+        - bearerAuth: []
+      tags:
+        - Teams
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Team"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
 
   ##################################################
   # Admin API
