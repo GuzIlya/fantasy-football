@@ -1,6 +1,8 @@
 package by.guz.fantasy.football.api;
 
+import by.guz.fantasy.football.dto.PlayerDto;
 import by.guz.fantasy.football.dto.UserDto;
+import by.guz.fantasy.football.service.PlayerService;
 import by.guz.fantasy.football.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import static org.springframework.http.HttpStatus.OK;
 public class UserApiController {
 
     private final UserService userService;
+    private final PlayerService playerService;
 
     @GetMapping
     public ResponseEntity<List<UserDto.Response.Default>> getAllUsers() {
@@ -29,5 +32,11 @@ public class UserApiController {
     public ResponseEntity<UserDto.Response.Default> getCurrentUser() {
         UserDto.Response.Default user = userService.getCurrentUser();
         return new ResponseEntity<>(user, OK);
+    }
+
+    @GetMapping("/current/players")
+    public ResponseEntity<List<PlayerDto.Response.Default>> getCurrentUserPlayers() {
+        List<PlayerDto.Response.Default> players = playerService.getCurrentUserPlayers();
+        return new ResponseEntity<>(players, OK);
     }
 }

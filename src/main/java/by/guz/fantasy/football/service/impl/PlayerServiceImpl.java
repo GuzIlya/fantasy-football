@@ -1,9 +1,12 @@
 package by.guz.fantasy.football.service.impl;
 
 import by.guz.fantasy.football.dto.PageDto;
+import by.guz.fantasy.football.dto.PlayerDto;
 import by.guz.fantasy.football.entity.PlayerEntity;
 import by.guz.fantasy.football.entity.PlayerEntity_;
+import by.guz.fantasy.football.exception.NotFoundException;
 import by.guz.fantasy.football.repository.PlayerRepository;
+import by.guz.fantasy.football.repository.UserRepository;
 import by.guz.fantasy.football.repository.custom.CustomPlayerRepository;
 import by.guz.fantasy.football.repository.custom.Filter;
 import by.guz.fantasy.football.repository.custom.QueryOperator;
@@ -19,7 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static by.guz.fantasy.football.exception.Constants.USER_NOT_FOUND;
 import static by.guz.fantasy.football.mapper.PlayerMapper.PLAYER_MAPPER;
+import static by.guz.fantasy.football.util.SecurityUtil.getUserId;
 
 @Service
 @AllArgsConstructor
@@ -27,6 +32,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     private final PlayerRepository playerRepository;
     private final CustomPlayerRepository customPlayerRepository;
+    private final UserRepository userRepository;
 
     @Override
     public Map<String, Object> getAllPlayers(int page, int size) {
@@ -114,5 +120,20 @@ public class PlayerServiceImpl implements PlayerService {
                 .collect(Collectors.toList()));
 
         return response;
+    }
+
+    @Override
+    public List<PlayerDto.Response.Default> getCurrentUserPlayers() {
+        userExistsOrException(getUserId());
+        return playerRepository.findAllByUserId(getUserId())
+                .stream()
+                .map(PLAYER_MAPPER::toPlayerDtoDefault)
+                .collect(Collectors.toList());
+    }
+
+    private void userExistsOrException(final Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new NotFoundException(USER_NOT_FOUND);
+        }
     }
 }
