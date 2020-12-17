@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -24,14 +25,14 @@ public class AdminApiController {
     private final AdminService adminService;
 
     @PostMapping("/players/update")
-    public ResponseEntity<List<PlayerDto.Response.Default>> updatePlayers() throws JsonProcessingException {
-        List<PlayerDto.Response.Default> players = adminService.updatePlayers();
-        return new ResponseEntity<>(players, OK);
+    public ResponseEntity<Object> updatePlayers() throws JsonProcessingException {
+        adminService.updatePlayers();
+        return new ResponseEntity<>(CREATED);
     }
 
     @PostMapping("/teams/update")
-    public ResponseEntity<List<TeamDto.Response.Default>> updateTeams() throws JsonProcessingException {
-        List<TeamDto.Response.Default> teams = adminService.updateTeams();
-        return new ResponseEntity<>(teams, OK);
+    public ResponseEntity<Object> updateTeams() throws JsonProcessingException {
+        adminService.updateTeams();
+        return new ResponseEntity<>(CREATED);
     }
 }

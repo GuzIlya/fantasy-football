@@ -19,9 +19,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static by.guz.fantasy.football.exception.Constants.EXTERNAL_API_UNABLE_CONFLICT;
 import static by.guz.fantasy.football.mapper.PlayerMapper.PLAYER_MAPPER;
@@ -40,7 +38,7 @@ public class AdminServiceImpl implements AdminService {
     private final CustomPlayerRepository customPlayerRepository;
 
     @Override
-    public List<PlayerDto.Response.Default> updatePlayers() throws JsonProcessingException {
+    public void updatePlayers() throws JsonProcessingException {
         if (!appConfiguration.getApiFootball().isEnable())
             throw new ConflictException(EXTERNAL_API_UNABLE_CONFLICT);
 
@@ -73,16 +71,11 @@ public class AdminServiceImpl implements AdminService {
 
             page++;
         }
-
-        return customPlayerRepository.getPlayers()
-                .stream()
-                .map(PLAYER_MAPPER::toPlayerDtoDefault)
-                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public List<TeamDto.Response.Default> updateTeams() throws JsonProcessingException {
+    public void updateTeams() throws JsonProcessingException {
         if (!appConfiguration.getApiFootball().isEnable())
             throw new ConflictException(EXTERNAL_API_UNABLE_CONFLICT);
 
@@ -99,10 +92,5 @@ public class AdminServiceImpl implements AdminService {
                     teamRepository.saveAndFlush(TEAM_MAPPER.toTeamEntity(team.getTeam()));
                 }
             }
-
-        return teamRepository.findAll()
-                .stream()
-                .map(TEAM_MAPPER::toTeamDtoDefault)
-                .collect(Collectors.toList());
     }
 }
