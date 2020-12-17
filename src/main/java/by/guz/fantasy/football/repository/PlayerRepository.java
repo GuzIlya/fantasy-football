@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PlayerRepository extends JpaRepository<PlayerEntity, Long>, JpaSpecificationExecutor<PlayerEntity> {
@@ -18,4 +19,10 @@ public interface PlayerRepository extends JpaRepository<PlayerEntity, Long>, Jpa
             "AND deleted_at IS NULL ",
             nativeQuery = true)
     List<PlayerEntity> findAllByUserId(@Param("userId") Long userId);
+
+    @Query(value = "SELECT * FROM player " +
+            "WHERE id = :playerId " +
+            "AND deleted_at IS NULL ",
+            nativeQuery = true)
+    Optional<PlayerEntity> findOneById(@Param("playerId") Long playerId);
 }
