@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import java.time.Instant;
 import java.util.List;
 
 public enum  TeamDto {;
@@ -18,21 +17,15 @@ public enum  TeamDto {;
     private interface Founded { @NotNull String getFounded(); }
     private interface National { @NotNull String getNational(); }
     private interface Logo { String getLogo(); }
-    private interface CreatedAt { @NotNull Instant getCreatedAt(); }
-    private interface UpdatedAt { Instant getUpdatedAt(); }
 
     public enum Response {;
         @Getter @Setter @NoArgsConstructor @JsonIgnoreProperties(ignoreUnknown = true)
-        public static class Default implements Id, ExternalId, Name, Country, Founded, National, Logo, CreatedAt, UpdatedAt {
+        public static class Default implements Id, Name, Country, Founded, Logo {
             Long id;
-            Long externalId;
             String name;
             String country;
             String founded;
-            String national;
             String logo;
-            Instant createdAt;
-            Instant updatedAt;
         }
     }
 

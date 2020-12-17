@@ -11,13 +11,13 @@ import org.mapstruct.factory.Mappers;
 public interface PlayerMapper {
     PlayerMapper PLAYER_MAPPER = Mappers.getMapper(PlayerMapper.class);
 
-    PlayerDto.Response.Default toTeamDtoDefault(PlayerEntity source);
+    PlayerDto.Response.Default toPlayerDtoDefault(PlayerEntity source);
 
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "externalId", source = "id")
     @Mapping(target = "birthdate", source = "birth.date")
-    PlayerEntity toTeamEntity(PlayerDto.External.Default source);
+    PlayerEntity toPlayerEntity(PlayerDto.External.Default source);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "externalId", source = "id")

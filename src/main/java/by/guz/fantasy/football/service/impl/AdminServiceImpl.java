@@ -8,6 +8,7 @@ import by.guz.fantasy.football.entity.TeamEntity;
 import by.guz.fantasy.football.exception.ConflictException;
 import by.guz.fantasy.football.repository.PlayerRepository;
 import by.guz.fantasy.football.repository.TeamRepository;
+import by.guz.fantasy.football.repository.custom.CustomPlayerRepository;
 import by.guz.fantasy.football.service.AdminService;
 import by.guz.fantasy.football.service.FootballApiService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -36,6 +37,8 @@ public class AdminServiceImpl implements AdminService {
     private final PlayerRepository playerRepository;
     private final AppConfiguration appConfiguration;
 
+    private final CustomPlayerRepository customPlayerRepository;
+
     @Override
     public List<PlayerDto.Response.Default> updatePlayers() throws JsonProcessingException {
         if (!appConfiguration.getApiFootball().isEnable())
@@ -52,14 +55,14 @@ public class AdminServiceImpl implements AdminService {
                 break;
 
             for (PlayerDto.External.DefaultCover player : players.getResponse()) {
-                Optional<PlayerEntity> existing = playerRepository.findOneByExternalId(player.getPlayer().getId());
+                Optional<PlayerEntity> existing = customPlayerRepository.getOneByExternalId(player.getPlayer().getId());
 
                 PlayerEntity playerToSave;
 
                 if (existing.isPresent()) {
                     playerToSave = PLAYER_MAPPER.updateEntity(player.getPlayer(), existing.get());
                 } else {
-                    playerToSave = PLAYER_MAPPER.toTeamEntity(player.getPlayer());
+                    playerToSave = PLAYER_MAPPER.toPlayerEntity(player.getPlayer());
                     playerToSave.setCost(appConfiguration.getGame().getDefaultCost());
                 }
 
@@ -71,9 +74,9 @@ public class AdminServiceImpl implements AdminService {
             page++;
         }
 
-        return playerRepository.findAll()
+        return customPlayerRepository.getPlayers()
                 .stream()
-                .map(PLAYER_MAPPER::toTeamDtoDefault)
+                .map(PLAYER_MAPPER::toPlayerDtoDefault)
                 .collect(Collectors.toList());
     }
 

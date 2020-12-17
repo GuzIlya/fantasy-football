@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
@@ -26,15 +25,12 @@ public enum PlayerDto {;
     private interface Photo { String getPhoto(); }
     private interface TeamId { Long getTeamId(); }
     private interface Team { TeamDto.Response.Default getTeam(); }
-    private interface CreatedAt { @NotNull Instant getCreatedAt(); }
-    private interface UpdatedAt { Instant getUpdatedAt(); }
 
     public enum Response {;
         @Getter @Setter @NoArgsConstructor
-        public static class Default implements Id, ExternalId, Name, Firstname, Lastname, Birthdate,
-                Nationality, Cost, Height, Weight, Injured, Photo, TeamId, CreatedAt, UpdatedAt {
+        public static class Default implements Id, Name, Firstname, Lastname, Birthdate,
+                Nationality, Cost, Height, Weight, Injured, Photo, Team {
             Long id;
-            Long externalId;
             String name;
             String firstname;
             String lastname;
@@ -45,9 +41,7 @@ public enum PlayerDto {;
             String weight;
             Boolean injured;
             String photo;
-            Long teamId;
-            Instant createdAt;
-            Instant updatedAt;
+            TeamDto.Response.Default team;
         }
     }
 
