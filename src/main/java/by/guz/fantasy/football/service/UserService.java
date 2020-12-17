@@ -7,4 +7,7 @@ import java.util.List;
 public interface UserService {
 
     List<UserDto.Response.Default> getAllUsers();
+
+    UserDto.Response.Default getCurrentUser();
+
 }

@@ -19,6 +19,12 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     List<UserEntity> findAll();
 
     @Query(value = "SELECT * FROM fantasy_user " +
+            "WHERE id = :userId " +
+            "AND deleted_at IS NULL ",
+            nativeQuery = true)
+    Optional<UserEntity> findOneById(@Param("userId") Long userId);
+
+    @Query(value = "SELECT * FROM fantasy_user " +
             "WHERE username = :username " +
             "AND deleted_at IS NULL ",
             nativeQuery = true)

@@ -24,4 +24,10 @@ public class UserApiController {
         List<UserDto.Response.Default> users = userService.getAllUsers();
         return new ResponseEntity<>(users, OK);
     }
+
+    @GetMapping("/current")
+    public ResponseEntity<UserDto.Response.Default> getCurrentUser() {
+        UserDto.Response.Default user = userService.getCurrentUser();
+        return new ResponseEntity<>(user, OK);
+    }
 }
