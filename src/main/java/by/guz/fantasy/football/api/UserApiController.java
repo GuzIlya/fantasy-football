@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @AllArgsConstructor
@@ -26,6 +25,13 @@ public class UserApiController {
         List<UserDto.Response.Default> users = userService.getAllUsers();
         return new ResponseEntity<>(users, OK);
     }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserDto.Response.Default> getUserById(@PathVariable Long userId) {
+        UserDto.Response.Default user = userService.getUserById(userId);
+        return new ResponseEntity<>(user, OK);
+    }
+
 
     @GetMapping("/current")
     public ResponseEntity<UserDto.Response.Default> getCurrentUser() {
@@ -43,5 +49,11 @@ public class UserApiController {
     public ResponseEntity<PlayerDto.Response.Default> purchasePlayerToCurrentUser(@PathVariable Long playerId) {
         PlayerDto.Response.Default player = userService.purchasePlayerToCurrentUser(playerId);
         return new ResponseEntity<>(player, CREATED);
+    }
+
+    @DeleteMapping("/current/players/{playerId}")
+    public ResponseEntity<Object> sellPlayerToCurrentUser(@PathVariable Long playerId) {
+        userService.sellPlayerToCurrentUser(playerId);
+        return new ResponseEntity<>(NO_CONTENT);
     }
 }

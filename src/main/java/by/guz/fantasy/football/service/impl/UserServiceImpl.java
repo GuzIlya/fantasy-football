@@ -42,6 +42,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
+    public UserDto.Response.Default getUserById(Long userId) {
+        UserEntity existing = userRepository.findOneById(userId)
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+        return USER_MAPPER.toUserDtoDefault(existing);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public UserDto.Response.Default getCurrentUser() {
         UserEntity user = userRepository.findOneById(getUserId())
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
@@ -71,5 +79,34 @@ public class UserServiceImpl implements UserService {
         userPlayerRepository.saveAndFlush(userPlayer);
 
         return PLAYER_MAPPER.toPlayerDtoDefault(player);
+    }
+
+    @Override
+    @Transactional
+    public void sellPlayerToCurrentUser(Long playerId) {
+        UserEntity user = userRepository.findOneById(getUserId())
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+
+        playerExistsOrException(playerId);
+
+        UserPlayerEntity purchaseDetails = userPlayerRepository.findByUserIdAndPlayerId(getUserId(), playerId)
+                .orElseThrow(() -> new NotFoundException(USER_PLAYER_NOT_FOUND));
+
+        user.setCash(user.getCash() + purchaseDetails.getPurchasePrice());
+        userRepository.saveAndFlush(user);
+
+        userPlayerRepository.deleteOneByProjectIdAndUserId(playerId, getUserId());
+    }
+
+    private void userExistsOrException(final Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new NotFoundException(USER_NOT_FOUND);
+        }
+    }
+
+    private void playerExistsOrException(final Long playerId) {
+        if (!playerRepository.existsById(playerId)) {
+            throw new NotFoundException(PLAYER_NOT_FOUND);
+        }
     }
 }
