@@ -10,4 +10,6 @@ public interface FootballApiService {
 
     JsonNode getTeams();
 
+    JsonNode getRounds();
+
 }

@@ -8,4 +8,6 @@ public interface AdminService {
 
     void updateTeams() throws JsonProcessingException;
 
+    void updateRounds() throws JsonProcessingException;
+
 }

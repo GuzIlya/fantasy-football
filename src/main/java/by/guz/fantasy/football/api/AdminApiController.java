@@ -1,7 +1,5 @@
 package by.guz.fantasy.football.api;
 
-import by.guz.fantasy.football.dto.PlayerDto;
-import by.guz.fantasy.football.dto.TeamDto;
 import by.guz.fantasy.football.service.AdminService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
@@ -11,10 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @AllArgsConstructor
@@ -35,4 +30,11 @@ public class AdminApiController {
         adminService.updateTeams();
         return new ResponseEntity<>(CREATED);
     }
+
+    @PostMapping("/rounds/update")
+    public ResponseEntity<Object> updateRounds() throws JsonProcessingException {
+        adminService.updateRounds();
+        return new ResponseEntity<>(CREATED);
+    }
+
 }

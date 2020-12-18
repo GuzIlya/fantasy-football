@@ -2,11 +2,15 @@ package by.guz.fantasy.football.service.impl;
 
 import by.guz.fantasy.football.configuration.AppConfiguration;
 import by.guz.fantasy.football.dto.PlayerDto;
+import by.guz.fantasy.football.dto.RoundDto;
 import by.guz.fantasy.football.dto.TeamDto;
 import by.guz.fantasy.football.entity.PlayerEntity;
+import by.guz.fantasy.football.entity.RoundEntity;
 import by.guz.fantasy.football.entity.TeamEntity;
+import by.guz.fantasy.football.entity.enums.RoundStatusEntity;
 import by.guz.fantasy.football.exception.ConflictException;
 import by.guz.fantasy.football.repository.PlayerRepository;
+import by.guz.fantasy.football.repository.RoundRepository;
 import by.guz.fantasy.football.repository.TeamRepository;
 import by.guz.fantasy.football.repository.custom.CustomPlayerRepository;
 import by.guz.fantasy.football.service.AdminService;
@@ -33,6 +37,7 @@ public class AdminServiceImpl implements AdminService {
     private final FootballApiService footballApiService;
     private final TeamRepository teamRepository;
     private final PlayerRepository playerRepository;
+    private final RoundRepository roundRepository;
     private final AppConfiguration appConfiguration;
 
     private final CustomPlayerRepository customPlayerRepository;
@@ -92,5 +97,23 @@ public class AdminServiceImpl implements AdminService {
                     teamRepository.saveAndFlush(TEAM_MAPPER.toTeamEntity(team.getTeam()));
                 }
             }
+    }
+
+    @Override
+    public void updateRounds() throws JsonProcessingException {
+        if (!appConfiguration.getApiFootball().isEnable())
+            throw new ConflictException(EXTERNAL_API_UNABLE_CONFLICT);
+
+        JsonNode node = footballApiService.getRounds();
+
+        RoundDto.External.Default rounds = new ObjectMapper().treeToValue(node, RoundDto.External.Default.class);
+
+        for (String name : rounds.getResponse()) {
+            if (!roundRepository.existsByName(name))
+                roundRepository.saveAndFlush(RoundEntity.builder()
+                        .name(name)
+                        .status(RoundStatusEntity.UPCOMING)
+                        .build());
+        }
     }
 }

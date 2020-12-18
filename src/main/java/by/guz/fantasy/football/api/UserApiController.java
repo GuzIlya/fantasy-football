@@ -1,7 +1,9 @@
 package by.guz.fantasy.football.api;
 
+import by.guz.fantasy.football.dto.LineupDto;
 import by.guz.fantasy.football.dto.PlayerDto;
 import by.guz.fantasy.football.dto.UserDto;
+import by.guz.fantasy.football.service.LineupService;
 import by.guz.fantasy.football.service.PlayerService;
 import by.guz.fantasy.football.service.UserService;
 import lombok.AllArgsConstructor;
@@ -19,6 +21,7 @@ public class UserApiController {
 
     private final UserService userService;
     private final PlayerService playerService;
+    private final LineupService lineupService;
 
     @GetMapping
     public ResponseEntity<List<UserDto.Response.Default>> getAllUsers() {
@@ -56,4 +59,11 @@ public class UserApiController {
         userService.sellPlayerToCurrentUser(playerId);
         return new ResponseEntity<>(NO_CONTENT);
     }
+
+    @GetMapping("/current/lineups")
+    public ResponseEntity<List<LineupDto.Response.Default>> getCurrentUserLineups() {
+        List<LineupDto.Response.Default> lineups = lineupService.getCurrentUserLineups();
+        return new ResponseEntity<>(lineups, OK);
+    }
+
 }

@@ -41,4 +41,14 @@ public class FootballApiServiceImpl implements FootballApiService {
                 .bodyToMono(JsonNode.class)
                 .block();
     }
+
+    @Override
+    public JsonNode getRounds() {
+        return webClient
+                .get()
+                .uri("fixtures/rounds?league=39&season=2020")
+                .retrieve()
+                .bodyToMono(JsonNode.class)
+                .block();
+    }
 }
