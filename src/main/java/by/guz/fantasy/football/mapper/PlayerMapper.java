@@ -11,6 +11,8 @@ import org.mapstruct.factory.Mappers;
 public interface PlayerMapper {
     PlayerMapper PLAYER_MAPPER = Mappers.getMapper(PlayerMapper.class);
 
+
+    @Mapping(target = "position", source = "position")
     PlayerDto.Response.Default toPlayerDtoDefault(PlayerEntity source);
 
 

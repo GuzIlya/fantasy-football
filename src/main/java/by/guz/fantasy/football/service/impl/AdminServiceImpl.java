@@ -7,6 +7,7 @@ import by.guz.fantasy.football.dto.TeamDto;
 import by.guz.fantasy.football.entity.PlayerEntity;
 import by.guz.fantasy.football.entity.RoundEntity;
 import by.guz.fantasy.football.entity.TeamEntity;
+import by.guz.fantasy.football.entity.enums.PlayerPositionEntity;
 import by.guz.fantasy.football.entity.enums.RoundStatusEntity;
 import by.guz.fantasy.football.exception.ConflictException;
 import by.guz.fantasy.football.repository.PlayerRepository;
@@ -69,6 +70,7 @@ public class AdminServiceImpl implements AdminService {
                     playerToSave.setCost(appConfiguration.getGame().getDefaultCost());
                 }
 
+                playerToSave.setPosition(PlayerPositionEntity.fromValue(player.getStatistics().get(0).getGames().getPosition().toUpperCase()));
                 Optional<TeamEntity> playersTeam = teamRepository.findOneByExternalId(player.getStatistics().get(0).getTeam().getId());
                 playersTeam.ifPresent(playerToSave::setTeam);
                 playerRepository.saveAndFlush(playerToSave);

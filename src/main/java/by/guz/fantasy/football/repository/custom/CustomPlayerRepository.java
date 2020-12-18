@@ -2,6 +2,7 @@ package by.guz.fantasy.football.repository.custom;
 
 import by.guz.fantasy.football.entity.PlayerEntity;
 import by.guz.fantasy.football.entity.PlayerEntity_;
+import by.guz.fantasy.football.entity.enums.PlayerPositionEntity;
 import by.guz.fantasy.football.repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -101,7 +102,8 @@ public class CustomPlayerRepository {
             return Long.valueOf(value);
         } else if (fieldType == Date.class) {
             return new SimpleDateFormat("yyyy-MM-dd").parse(value);
-        }
+        } else if (fieldType == PlayerPositionEntity.class)
+            return PlayerPositionEntity.fromValue(value);
         return value;
     }
 

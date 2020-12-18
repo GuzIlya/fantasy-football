@@ -1,5 +1,6 @@
 package by.guz.fantasy.football.dto;
 
+import by.guz.fantasy.football.entity.enums.PlayerPositionEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,11 +26,13 @@ public enum PlayerDto {;
     private interface Photo { String getPhoto(); }
     private interface TeamId { Long getTeamId(); }
     private interface Team { TeamDto.Response.Default getTeam(); }
+    private interface Position { PlayerPositionEntity getPosition(); }
+
 
     public enum Response {;
         @Getter @Setter @NoArgsConstructor
         public static class Default implements Id, Name, Firstname, Lastname, Birthdate,
-                Nationality, Cost, Height, Weight, Injured, Photo, Team {
+                Nationality, Cost, Height, Weight, Injured, Photo, Team, Position {
             Long id;
             String name;
             String firstname;
@@ -41,6 +44,7 @@ public enum PlayerDto {;
             String weight;
             Boolean injured;
             String photo;
+            PlayerPositionEntity position;
             TeamDto.Response.Default team;
         }
     }
@@ -63,11 +67,17 @@ public enum PlayerDto {;
             @Getter @Setter @NoArgsConstructor @JsonIgnoreProperties(ignoreUnknown = true)
             public static class Statistics {
                 Team team;
+                Games games;
             }
 
             @Getter @Setter @NoArgsConstructor @JsonIgnoreProperties(ignoreUnknown = true)
             public static class Team {
                 Long id;
+            }
+
+            @Getter @Setter @NoArgsConstructor @JsonIgnoreProperties(ignoreUnknown = true)
+            public static class Games {
+                String position;
             }
         }
 

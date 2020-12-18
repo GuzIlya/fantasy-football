@@ -1,10 +1,13 @@
 package by.guz.fantasy.football.entity;
 
+import by.guz.fantasy.football.entity.enums.PlayerPositionEntity;
 import lombok.*;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Date;
 
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 
 @Getter
@@ -55,6 +58,11 @@ public class PlayerEntity extends AbstractBaseEntity {
 
     @Column(name = "photo")
     private String photo;
+
+    @Type(type = "enumType")
+    @Enumerated(STRING)
+    @Column(name = "position", nullable = false, columnDefinition = "player_position")
+    private PlayerPositionEntity position;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "team_id")

@@ -4,6 +4,7 @@ import by.guz.fantasy.football.dto.PageDto;
 import by.guz.fantasy.football.dto.PlayerDto;
 import by.guz.fantasy.football.entity.PlayerEntity;
 import by.guz.fantasy.football.entity.PlayerEntity_;
+import by.guz.fantasy.football.entity.enums.PlayerPositionEntity;
 import by.guz.fantasy.football.exception.NotFoundException;
 import by.guz.fantasy.football.repository.PlayerRepository;
 import by.guz.fantasy.football.repository.UserRepository;
@@ -51,7 +52,8 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Map<String, Object> getAllPlayersFounded(int page, int size, String search, Integer minAge, Integer maxAge,
-                                                    String nationality, Double minCost, Double maxCost, Long teamId) {
+                                                    String nationality, Double minCost, Double maxCost, Long teamId,
+                                                    PlayerPositionEntity position) {
         Map<String, Object> response = new HashMap<>();
 
         List<Filter> filters = new ArrayList<>();
@@ -108,6 +110,14 @@ public class PlayerServiceImpl implements PlayerService {
                     .field(PlayerEntity_.TEAM_ID)
                     .operator(QueryOperator.EQUALS)
                     .value(teamId.toString())
+                    .build());
+        }
+
+        if (position != null) {
+            filters.add(Filter.builder()
+                    .field(PlayerEntity_.POSITION)
+                    .operator(QueryOperator.EQUALS)
+                    .value(position.toString())
                     .build());
         }
 

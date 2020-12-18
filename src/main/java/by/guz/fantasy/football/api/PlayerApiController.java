@@ -1,5 +1,6 @@
 package by.guz.fantasy.football.api;
 
+import by.guz.fantasy.football.entity.enums.PlayerPositionEntity;
 import by.guz.fantasy.football.service.PlayerService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -35,9 +36,10 @@ public class PlayerApiController {
             @RequestParam(value = "nationality", required = false) String nationality,
             @RequestParam(value = "minCost", required = false) Double minCost,
             @RequestParam(value = "maxCost", required = false) Double maxCost,
-            @RequestParam(value = "team", required = false) Long teamId) {
+            @RequestParam(value = "team", required = false) Long teamId,
+            @RequestParam(value = "position", required = false) PlayerPositionEntity position) {
         Map<String, Object> players = playerService.getAllPlayersFounded(page, size, search, minAge, maxAge, nationality,
-                minCost, maxCost, teamId);
+                minCost, maxCost, teamId, position);
         return new ResponseEntity<>(players, OK);
     }
 }

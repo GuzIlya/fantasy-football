@@ -365,6 +365,10 @@ paths:
           schema:
             type: number
             format: double
+        - name: position
+          in: query
+          schema:
+            $ref: "#/components/schemas/PlayerPosition"
         - name: team
           in: query
           description: Id команды
@@ -551,6 +555,15 @@ components:
         - "USER"
         - "ADMIN"
 
+    PlayerPosition:
+      type: string
+      enum:
+        - "UNKNOWN"
+        - "GOALKEEPER"
+        - "DEFENDER"
+        - "MIDFIELDER"
+        - "ATTACKER"
+
     Player:
       properties:
         id:
@@ -578,6 +591,8 @@ components:
           type: boolean
         photo:
           type: string
+        position:
+          $ref: "#/components/schemas/PlayerPosition"
         team:
           $ref: "#/components/schemas/Team"
 
