@@ -8,14 +8,17 @@ import by.guz.fantasy.football.service.PlayerService;
 import by.guz.fantasy.football.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @AllArgsConstructor
+@Validated
 @RequestMapping(value = "/api/v1/users")
 public class UserApiController {
 
@@ -64,6 +67,12 @@ public class UserApiController {
     public ResponseEntity<List<LineupDto.Response.Default>> getCurrentUserLineups() {
         List<LineupDto.Response.Default> lineups = lineupService.getCurrentUserLineups();
         return new ResponseEntity<>(lineups, OK);
+    }
+
+    @PostMapping("/current/lineups")
+    public ResponseEntity<Object> setLineupToCurrentUser(@RequestBody @Valid LineupDto.Request.Default body) {
+        lineupService.setLineupToCurrentUser(body);
+        return new ResponseEntity<>(CREATED);
     }
 
 }

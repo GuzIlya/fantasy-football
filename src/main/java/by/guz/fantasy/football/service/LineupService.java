@@ -5,5 +5,9 @@ import by.guz.fantasy.football.dto.LineupDto;
 import java.util.List;
 
 public interface LineupService {
+
     List<LineupDto.Response.Default> getCurrentUserLineups();
+
+    void setLineupToCurrentUser(LineupDto.Request.Default dto);
+
 }
