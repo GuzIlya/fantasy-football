@@ -13,6 +13,13 @@ import java.util.Optional;
 public interface LineupRepository extends JpaRepository<LineupEntity, Long> {
 
     @Query(value = "SELECT * FROM lineup " +
+            "WHERE id = :id " +
+            "AND user_id = :userId " +
+            "AND deleted_at IS NULL ",
+            nativeQuery = true)
+    Optional<LineupEntity> findByIdAndUserId(@Param("id") Long id, @Param("userId") Long userId);
+
+    @Query(value = "SELECT * FROM lineup " +
             "WHERE user_id = :userId " +
             "AND deleted_at IS NULL ",
             nativeQuery = true)

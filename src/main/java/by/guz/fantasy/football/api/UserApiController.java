@@ -75,4 +75,11 @@ public class UserApiController {
         return new ResponseEntity<>(CREATED);
     }
 
+
+    @GetMapping("/current/lineups/{lineupId}")
+    public ResponseEntity<LineupDto.Response.Default> getCurrentUserLineupById(@PathVariable Long lineupId) {
+        LineupDto.Response.Default lineup = lineupService.getCurrentUserLineupById(lineupId);
+        return new ResponseEntity<>(lineup, OK);
+    }
+
 }

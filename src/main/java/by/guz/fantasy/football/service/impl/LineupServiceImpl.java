@@ -52,6 +52,21 @@ public class LineupServiceImpl implements LineupService {
     }
 
     @Override
+    public LineupDto.Response.Default getCurrentUserLineupById(Long lineupId) {
+        userExistsOrException(getUserId());
+        LineupEntity existing = lineupRepository.findByIdAndUserId(lineupId, getUserId())
+                .orElseThrow(() -> new NotFoundException(LINEUP_NOT_FOUND));
+
+        LineupDto.Response.Default lineup = LINEUP_MAPPER.toLineupDtoDefault(existing);
+        lineup.setLineup(lineupPlayerRepository.findAllByLineupId(lineup.getId())
+                .stream()
+                .map(LINEUP_PLAYER_MAPPER::toLineupPlayerDtoExtended)
+                .collect(Collectors.toList()));
+
+        return lineup;
+    }
+
+    @Override
     @Transactional
     public void setLineupToCurrentUser(LineupDto.Request.Default dto) {
         userExistsOrException(getUserId());
