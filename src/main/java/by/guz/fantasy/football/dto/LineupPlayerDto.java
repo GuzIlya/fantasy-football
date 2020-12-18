@@ -7,7 +7,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 
-public class LineupPlayerDto {;
+public enum LineupPlayerDto {;
     private interface Number { @NotNull Integer getNumber(); }
     private interface PlayerId { @NotNull Long getPlayerId(); }
     private interface Player { @NotNull PlayerDto.Response.Default getPlayer(); }

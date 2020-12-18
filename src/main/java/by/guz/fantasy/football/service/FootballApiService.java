@@ -12,4 +12,5 @@ public interface FootballApiService {
 
     JsonNode getRounds();
 
+    JsonNode getFixtures();
 }

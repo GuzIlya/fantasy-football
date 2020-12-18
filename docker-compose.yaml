@@ -1,15 +1,15 @@
 version: "3.7"
 services:
 
-#  postgres-test:
-#    image: postgres:13-alpine
-#    container_name: fantasy-postgres-test
-#    environment:
-#      POSTGRES_USER: fantasy
-#      POSTGRES_PASSWORD: fantasy
-#      POSTGRES_DB: fantasy
-#    ports:
-#      - "5433:5432"
+  postgres-test:
+    image: postgres:13-alpine
+    container_name: fantasy-postgres-test
+    environment:
+      POSTGRES_USER: fantasy
+      POSTGRES_PASSWORD: fantasy
+      POSTGRES_DB: fantasy
+    ports:
+      - "5433:5432"
 
   postgres:
     image: postgres:13-alpine
