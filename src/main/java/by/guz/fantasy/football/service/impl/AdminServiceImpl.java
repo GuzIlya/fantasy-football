@@ -1,15 +1,20 @@
 package by.guz.fantasy.football.service.impl;
 
 import by.guz.fantasy.football.configuration.AppConfiguration;
+import by.guz.fantasy.football.dto.FixtureDto;
 import by.guz.fantasy.football.dto.PlayerDto;
 import by.guz.fantasy.football.dto.RoundDto;
 import by.guz.fantasy.football.dto.TeamDto;
+import by.guz.fantasy.football.entity.FixtureEntity;
 import by.guz.fantasy.football.entity.PlayerEntity;
 import by.guz.fantasy.football.entity.RoundEntity;
 import by.guz.fantasy.football.entity.TeamEntity;
+import by.guz.fantasy.football.entity.enums.FixtureStatusEntity;
 import by.guz.fantasy.football.entity.enums.PlayerPositionEntity;
 import by.guz.fantasy.football.entity.enums.RoundStatusEntity;
 import by.guz.fantasy.football.exception.ConflictException;
+import by.guz.fantasy.football.exception.NotFoundException;
+import by.guz.fantasy.football.repository.FixtureRepository;
 import by.guz.fantasy.football.repository.PlayerRepository;
 import by.guz.fantasy.football.repository.RoundRepository;
 import by.guz.fantasy.football.repository.TeamRepository;
@@ -24,9 +29,13 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-import static by.guz.fantasy.football.exception.Constants.EXTERNAL_API_UNABLE_CONFLICT;
+import static by.guz.fantasy.football.exception.Constants.*;
+import static by.guz.fantasy.football.mapper.FixtureMapper.FIXTURE_MAPPER;
 import static by.guz.fantasy.football.mapper.PlayerMapper.PLAYER_MAPPER;
 import static by.guz.fantasy.football.mapper.TeamMapper.TEAM_MAPPER;
 
@@ -39,11 +48,13 @@ public class AdminServiceImpl implements AdminService {
     private final TeamRepository teamRepository;
     private final PlayerRepository playerRepository;
     private final RoundRepository roundRepository;
+    private final FixtureRepository fixtureRepository;
     private final AppConfiguration appConfiguration;
 
     private final CustomPlayerRepository customPlayerRepository;
 
     @Override
+    @Transactional
     public void updatePlayers() throws JsonProcessingException {
         if (!appConfiguration.getApiFootball().isEnable())
             throw new ConflictException(EXTERNAL_API_UNABLE_CONFLICT);
@@ -102,6 +113,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public void updateRounds() throws JsonProcessingException {
         if (!appConfiguration.getApiFootball().isEnable())
             throw new ConflictException(EXTERNAL_API_UNABLE_CONFLICT);
@@ -117,5 +129,49 @@ public class AdminServiceImpl implements AdminService {
                         .status(RoundStatusEntity.UPCOMING)
                         .build());
         }
+    }
+
+    @Override
+    @Transactional
+    public void updateFixtures() throws JsonProcessingException {
+        if (!appConfiguration.getApiFootball().isEnable())
+            throw new ConflictException(EXTERNAL_API_UNABLE_CONFLICT);
+
+        JsonNode node = footballApiService.getFixtures();
+
+        FixtureDto.External.DefaultList fixtures = new ObjectMapper().treeToValue(node, FixtureDto.External.DefaultList.class);
+
+        if (fixtures != null && !fixtures.getResponse().isEmpty())
+            for (FixtureDto.External.Default fixture : fixtures.getResponse()) {
+                Optional<FixtureEntity> existing = fixtureRepository.findOneByExternalId(fixture.getFixture().getId());
+                FixtureEntity fixtureToSave;
+
+                if (existing.isPresent()) {
+                    fixtureToSave = FIXTURE_MAPPER.updateEntity(fixture, existing.get());
+                } else {
+                    fixtureToSave = FIXTURE_MAPPER.toFixtureEntity(fixture);
+
+                    TeamEntity home = teamRepository.findOneByExternalId(fixture.getTeams().getHome().getId())
+                            .orElseThrow(() -> new NotFoundException(TEAM_NOT_FOUND));
+
+                    fixtureToSave.setAwayTeam(TeamEntity.builder().id(home.getId()).build());
+
+                    TeamEntity away = teamRepository.findOneByExternalId(fixture.getTeams().getAway().getId())
+                            .orElseThrow(() -> new NotFoundException(TEAM_NOT_FOUND));
+
+                    fixtureToSave.setHomeTeam(TeamEntity.builder().id(away.getId()).build());
+
+                    RoundEntity round = roundRepository.findOneByName(fixture.getLeague().getRound())
+                            .orElseThrow(() -> new NotFoundException(ROUND_NOT_FOUND));
+
+                    fixtureToSave.setRound(RoundEntity.builder().id(round.getId()).build());
+                }
+
+                OffsetDateTime timed = OffsetDateTime.parse(fixture.getFixture().getDate(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                fixtureToSave.setDate(Instant.from(timed));
+                fixtureToSave.setStatus(FixtureStatusEntity.fromValue(fixture.getFixture().getStatus().getStatus()));
+                fixtureRepository.saveAndFlush(fixtureToSave);
+
+            }
     }
 }

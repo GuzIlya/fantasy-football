@@ -1,6 +1,8 @@
 package by.guz.fantasy.football.dto;
 
 import by.guz.fantasy.football.entity.enums.FixtureStatusEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.time.Instant;
+import java.util.List;
 
 public enum FixtureDto {;
     private interface Id { @Positive Long getId(); }
@@ -35,5 +38,58 @@ public enum FixtureDto {;
             FixtureStatusEntity status;
             Integer elapsed;
         }
+    }
+
+    public enum External {;
+
+    @Getter @Setter @NoArgsConstructor @JsonIgnoreProperties(ignoreUnknown = true)
+        public static class DefaultList {
+            List<Default> response;
+        }
+
+        @Getter @Setter @NoArgsConstructor @JsonIgnoreProperties(ignoreUnknown = true)
+        public static class Default {
+            Fixture fixture;
+            League league;
+            Teams teams;
+            Goals goals;
+        }
+
+        @Getter @Setter @NoArgsConstructor @JsonIgnoreProperties(ignoreUnknown = true)
+        public static class Fixture {
+            Long id;
+            String date;
+            Status status;
+        }
+
+        @Getter @Setter @NoArgsConstructor @JsonIgnoreProperties(ignoreUnknown = true)
+        public static class League {
+            String round;
+        }
+
+        @Getter @Setter @NoArgsConstructor @JsonIgnoreProperties(ignoreUnknown = true)
+        public static class Teams {
+            Team home;
+            Team away;
+        }
+
+        @Getter @Setter @NoArgsConstructor @JsonIgnoreProperties(ignoreUnknown = true)
+        public static class Team {
+            Long id;
+        }
+
+        @Getter @Setter @NoArgsConstructor @JsonIgnoreProperties(ignoreUnknown = true)
+        public static class Goals {
+            Integer home;
+            Integer away;
+        }
+
+        @Getter @Setter @NoArgsConstructor @JsonIgnoreProperties(ignoreUnknown = true)
+        public static class Status {
+            @JsonProperty("short")
+            String status;
+            Integer elapsed;
+        }
+
     }
 }

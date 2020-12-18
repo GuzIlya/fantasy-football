@@ -10,4 +10,5 @@ public interface AdminService {
 
     void updateRounds() throws JsonProcessingException;
 
+    void updateFixtures() throws JsonProcessingException;
 }

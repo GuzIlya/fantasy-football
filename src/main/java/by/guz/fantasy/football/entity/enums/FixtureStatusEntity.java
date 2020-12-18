@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum FixtureStatusEntity {
 
     TBD("UNKNOWN"),
-    NS("GOALKEEPER"),
+    NS("NS"),
     FH("1H"),
     HT("HT"),
     SH("2H"),

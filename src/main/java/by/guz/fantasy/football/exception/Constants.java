@@ -14,6 +14,7 @@ public class Constants {
     public static final String USER_USERNAME_NOT_FOUND = "User with such username not found.";
     public static final String USER_PLAYER_NOT_FOUND = "User don't have such Player.";
     public static final String ROUND_NOT_FOUND = "Round could not be found.";
+    public static final String TEAM_NOT_FOUND = "Team could not be found.";
     public static final String LINEUP_NOT_FOUND = "Lineup could not be found.";
 
     public static final String USER_EMAIL_CONFLICT = "User with such email already exists.";

@@ -51,10 +51,7 @@ public enum PlayerDto {;
 
     public enum External {;
 
-        @Getter
-        @Setter
-        @NoArgsConstructor
-        @JsonIgnoreProperties(ignoreUnknown = true)
+        @Getter @Setter @NoArgsConstructor @JsonIgnoreProperties(ignoreUnknown = true)
         public static class DefaultList {
             List<DefaultCover> response;
         }

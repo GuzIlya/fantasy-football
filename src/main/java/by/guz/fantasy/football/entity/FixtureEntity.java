@@ -28,7 +28,7 @@ public class FixtureEntity extends AbstractBaseEntity {
     @Column(name = "external_id", nullable = false)
     private Long externalId;
 
-    @Column(name = "date", insertable = false, updatable = false, nullable = false)
+    @Column(name = "date", nullable = false)
     private Instant date;
 
     @ManyToOne(fetch = LAZY)

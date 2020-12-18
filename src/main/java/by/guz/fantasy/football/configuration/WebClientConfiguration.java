@@ -33,6 +33,9 @@ public class WebClientConfiguration {
                 .clientConnector(new ReactorClientHttpConnector(HttpClient.from(tcpClient)))
                 .defaultHeader("x-rapidapi-host", appConfiguration.getApiFootball().getHost())
                 .defaultHeader("x-rapidapi-key", appConfiguration.getApiFootball().getKey())
+                .codecs(configurer -> configurer
+                        .defaultCodecs()
+                        .maxInMemorySize(16 * 1024 * 1024))
                 .build();
     }
 }

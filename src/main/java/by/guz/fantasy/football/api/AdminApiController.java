@@ -37,4 +37,9 @@ public class AdminApiController {
         return new ResponseEntity<>(CREATED);
     }
 
+    @PostMapping("/fixtures/update")
+    public ResponseEntity<Object> updateFixtures() throws JsonProcessingException {
+        adminService.updateFixtures();
+        return new ResponseEntity<>(CREATED);
+    }
 }
