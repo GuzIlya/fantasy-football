@@ -23,6 +23,7 @@ tags:
   - name: Players
   - name: Teams
   - name: Rounds
+  - name: Fixtures
   - name: Admin
 
 paths:
@@ -445,6 +446,31 @@ paths:
         "401":
           $ref: "#/components/responses/Unauthorized"
 
+
+  ##################################################
+  # Fixtures API
+  ##################################################
+
+  /api/v1/fixtures:
+    get:
+      operationId: getAllFixtures
+      summary: Получение списка матчей
+      security:
+        - bearerAuth: []
+      tags:
+        - Fixtures
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Fixture"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
   ##################################################
   # Admin API
   ##################################################
@@ -484,6 +510,22 @@ paths:
     post:
       operationId: updateRounds
       summary: Обновление туров в соотвествии с внешним API
+      security:
+        - bearerAuth: []
+      tags:
+        - Admin
+      responses:
+        "201":
+          description: Created
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /api/v1/admin/fixtures/update:
+    post:
+      operationId: updateFixtures
+      summary: Обновление матчей в соотвествии с внешним API
       security:
         - bearerAuth: []
       tags:
@@ -595,6 +637,52 @@ components:
           $ref: "#/components/schemas/PlayerPosition"
         team:
           $ref: "#/components/schemas/Team"
+
+    Fixture:
+      properties:
+        id:
+          type: integer
+          format: int64
+        date:
+          type: string
+          format: date-time
+        roundId:
+          type: integer
+          format: int64
+        homeTeam:
+          $ref: "#/components/schemas/Team"
+        awayTeam:
+          $ref: "#/components/schemas/Team"
+        homeGoals:
+          type: integer
+        awayGoals:
+          type: integer
+        status:
+          $ref: "#/components/schemas/FixtureStatus"
+        elapsed:
+          type: integer
+
+    FixtureStatus:
+      type: string
+      enum:
+        - "TBD"
+        - "NS"
+        - "1H"
+        - "HT"
+        - "2H"
+        - "ET"
+        - "P"
+        - "FT"
+        - "AET"
+        - "PEN"
+        - "BT"
+        - "SUSP"
+        - "INT"
+        - "PST"
+        - "CANC"
+        - "ABD"
+        - "AWD"
+        - "WO"
 
     Pagination:
       properties:
