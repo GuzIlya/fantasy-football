@@ -11,4 +11,6 @@ public interface AdminService {
     void updateRounds() throws JsonProcessingException;
 
     void updateFixtures() throws JsonProcessingException;
+
+    void updatePlayerStatistics(Long fixtureId) throws JsonProcessingException;
 }

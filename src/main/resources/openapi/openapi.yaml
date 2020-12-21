@@ -15,7 +15,12 @@ info:
 
     Access токен имеет срок жизни (1 час по умолчанию). По истечении срока последующие запросы с этим токеном в заголовке будут возвращать 401 Unauthorized. Для продолжения работы с API необходимо получить новую пару Access/Refresh токенов передав Refresh токен с действующим сроком жизни (1 день по умолчанию). Если срок жизни Refresh токена истек - необходимо заново произвести авторизацию.
 
+    # Postman
 
+    [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/ce06ca2f93f8df3534fa)
+
+
+    *Postman-коллекция может не полностью соответствовать пердставленому ниже (лень обновлять ссылку).*
 
 tags:
   - name: Auth
@@ -471,6 +476,51 @@ paths:
         "401":
           $ref: "#/components/responses/Unauthorized"
 
+  /api/v1/fixtures/{fixtureId}:
+    parameters:
+      - $ref: "#/components/parameters/FixtureIdPathParameter"
+    get:
+      operationId: getFixtureById
+      summary: Получение матча по ID
+      security:
+        - bearerAuth: []
+      tags:
+        - Fixtures
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Fixture"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/v1/fixtures/{fixtureId}/players:
+    parameters:
+      - $ref: "#/components/parameters/FixtureIdPathParameter"
+    get:
+      operationId: getPlayerStatisticsByFixtureId
+      summary: Получение статистики игроков в матче по ID
+      security:
+        - bearerAuth: []
+      tags:
+        - Fixtures
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PlayerStatistics"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+
   ##################################################
   # Admin API
   ##################################################
@@ -526,6 +576,24 @@ paths:
     post:
       operationId: updateFixtures
       summary: Обновление матчей в соотвествии с внешним API
+      security:
+        - bearerAuth: []
+      tags:
+        - Admin
+      responses:
+        "201":
+          description: Created
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /api/v1/admin/fixtures/{fixtureId}/update:
+    parameters:
+      - $ref: "#/components/parameters/FixtureIdPathParameter"
+    post:
+      operationId: updatePlayerStatistics
+      summary: Обновление подробностей матча по ID в соотвествии с внешним API
       security:
         - bearerAuth: []
       tags:
@@ -637,6 +705,70 @@ components:
           $ref: "#/components/schemas/PlayerPosition"
         team:
           $ref: "#/components/schemas/Team"
+
+    PlayerStatistics:
+      properties:
+        id:
+          type: integer
+          format: int64
+        player:
+          $ref: "#/components/schemas/Player"
+        fixture:
+          $ref: "#/components/schemas/Fixture"
+        minutesPlayed:
+          type: integer
+        rating:
+          type: string
+        offsides:
+          type: integer
+        shotsTotal:
+          type: integer
+        shotsOn:
+          type: integer
+        goalsTotal:
+          type: integer
+        goalsConceded:
+          type: integer
+        assists:
+          type: integer
+        saves:
+          type: integer
+        passesTotal:
+          type: integer
+        passesKey:
+          type: integer
+        passesAccuracy:
+          type: string
+        tackles:
+          type: integer
+        blocks:
+          type: integer
+        interceptions:
+          type: integer
+        duelsTotal:
+          type: integer
+        duelsWon:
+          type: integer
+        dribblesAttempts:
+          type: integer
+        dribblesSuccess:
+          type: integer
+        dribblesPast:
+          type: integer
+        foulsDrawn:
+          type: integer
+        foulsCommitted:
+          type: integer
+        cardsYellow:
+          type: integer
+        cardsRed:
+          type: integer
+        penaltyScored:
+          type: integer
+        penaltyMissed:
+          type: integer
+        penaltySaved:
+          type: integer
 
     Fixture:
       properties:
@@ -889,6 +1021,14 @@ components:
     LineupIdPathParameter:
       in: path
       name: lineupId
+      required: true
+      schema:
+        type: integer
+        format: int64
+
+    FixtureIdPathParameter:
+      in: path
+      name: fixtureId
       required: true
       schema:
         type: integer

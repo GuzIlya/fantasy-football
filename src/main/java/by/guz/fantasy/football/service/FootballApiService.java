@@ -13,4 +13,6 @@ public interface FootballApiService {
     JsonNode getRounds();
 
     JsonNode getFixtures();
+
+    JsonNode getFixtureById(Long id);
 }

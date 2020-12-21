@@ -61,4 +61,15 @@ public class FootballApiServiceImpl implements FootballApiService {
                 .bodyToMono(JsonNode.class)
                 .block();
     }
+
+
+    @Override
+    public JsonNode getFixtureById(Long id) {
+        return webClient
+                .get()
+                .uri("fixtures?id=" + id)
+                .retrieve()
+                .bodyToMono(JsonNode.class)
+                .block();
+    }
 }

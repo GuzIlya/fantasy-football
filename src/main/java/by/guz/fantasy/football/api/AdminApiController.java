@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,6 +41,13 @@ public class AdminApiController {
     @PostMapping("/fixtures/update")
     public ResponseEntity<Object> updateFixtures() throws JsonProcessingException {
         adminService.updateFixtures();
+        return new ResponseEntity<>(CREATED);
+    }
+
+
+    @PostMapping("/fixtures/{fixtureId}/update")
+    public ResponseEntity<Object> updatePlayerStatistics(@PathVariable Long fixtureId) throws JsonProcessingException {
+        adminService.updatePlayerStatistics(fixtureId);
         return new ResponseEntity<>(CREATED);
     }
 }

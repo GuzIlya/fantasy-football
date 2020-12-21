@@ -21,6 +21,12 @@ public interface FixtureRepository extends JpaRepository<FixtureEntity, Long> {
 
 
     @Query(value = "SELECT * FROM fixture " +
+            "WHERE id = :id " +
+            "AND deleted_at IS NULL ",
+            nativeQuery = true)
+    Optional<FixtureEntity> findOneById(@Param("id") Long id);
+
+    @Query(value = "SELECT * FROM fixture " +
             "WHERE external_id = :external_id " +
             "AND deleted_at IS NULL ",
             nativeQuery = true)

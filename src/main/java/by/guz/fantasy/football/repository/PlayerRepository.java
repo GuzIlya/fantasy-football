@@ -1,5 +1,6 @@
 package by.guz.fantasy.football.repository;
 
+import by.guz.fantasy.football.entity.FixtureEntity;
 import by.guz.fantasy.football.entity.PlayerEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -33,4 +34,10 @@ public interface PlayerRepository extends JpaRepository<PlayerEntity, Long>, Jpa
             "AND deleted_at IS NULL ",
             nativeQuery = true)
     Optional<PlayerEntity> findOneById(@Param("playerId") Long playerId);
+
+    @Query(value = "SELECT * FROM player " +
+            "WHERE external_id = :external_id " +
+            "AND deleted_at IS NULL ",
+            nativeQuery = true)
+    Optional<PlayerEntity> findOneByExternalId(@Param("external_id") Long externalId);
 }

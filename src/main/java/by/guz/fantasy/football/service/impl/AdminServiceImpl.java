@@ -1,23 +1,14 @@
 package by.guz.fantasy.football.service.impl;
 
 import by.guz.fantasy.football.configuration.AppConfiguration;
-import by.guz.fantasy.football.dto.FixtureDto;
-import by.guz.fantasy.football.dto.PlayerDto;
-import by.guz.fantasy.football.dto.RoundDto;
-import by.guz.fantasy.football.dto.TeamDto;
-import by.guz.fantasy.football.entity.FixtureEntity;
-import by.guz.fantasy.football.entity.PlayerEntity;
-import by.guz.fantasy.football.entity.RoundEntity;
-import by.guz.fantasy.football.entity.TeamEntity;
+import by.guz.fantasy.football.dto.*;
+import by.guz.fantasy.football.entity.*;
 import by.guz.fantasy.football.entity.enums.FixtureStatusEntity;
 import by.guz.fantasy.football.entity.enums.PlayerPositionEntity;
 import by.guz.fantasy.football.entity.enums.RoundStatusEntity;
 import by.guz.fantasy.football.exception.ConflictException;
 import by.guz.fantasy.football.exception.NotFoundException;
-import by.guz.fantasy.football.repository.FixtureRepository;
-import by.guz.fantasy.football.repository.PlayerRepository;
-import by.guz.fantasy.football.repository.RoundRepository;
-import by.guz.fantasy.football.repository.TeamRepository;
+import by.guz.fantasy.football.repository.*;
 import by.guz.fantasy.football.repository.custom.CustomPlayerRepository;
 import by.guz.fantasy.football.service.AdminService;
 import by.guz.fantasy.football.service.FootballApiService;
@@ -37,6 +28,7 @@ import java.util.Optional;
 import static by.guz.fantasy.football.exception.Constants.*;
 import static by.guz.fantasy.football.mapper.FixtureMapper.FIXTURE_MAPPER;
 import static by.guz.fantasy.football.mapper.PlayerMapper.PLAYER_MAPPER;
+import static by.guz.fantasy.football.mapper.PlayerStatisticsMapper.PLAYER_STATISTICS_MAPPER;
 import static by.guz.fantasy.football.mapper.TeamMapper.TEAM_MAPPER;
 
 @Service
@@ -49,6 +41,7 @@ public class AdminServiceImpl implements AdminService {
     private final PlayerRepository playerRepository;
     private final RoundRepository roundRepository;
     private final FixtureRepository fixtureRepository;
+    private final PlayerStatisticsRepository playerStatisticsRepository;
     private final AppConfiguration appConfiguration;
 
     private final CustomPlayerRepository customPlayerRepository;
@@ -172,6 +165,40 @@ public class AdminServiceImpl implements AdminService {
                 fixtureToSave.setStatus(FixtureStatusEntity.fromValue(fixture.getFixture().getStatus().getStatus()));
                 fixtureRepository.saveAndFlush(fixtureToSave);
 
+            }
+    }
+
+    @Override
+    @Transactional
+    public void updatePlayerStatistics(Long fixtureId) throws JsonProcessingException {
+        if (!appConfiguration.getApiFootball().isEnable())
+            throw new ConflictException(EXTERNAL_API_UNABLE_CONFLICT);
+
+        FixtureEntity fixture = fixtureRepository.findOneById(fixtureId)
+                .orElseThrow(() -> new NotFoundException(FIXTURE_NOT_FOUND));
+
+        playerStatisticsRepository.deleteAllByFixtureId(fixtureId);
+
+        JsonNode node = footballApiService.getFixtureById(fixture.getExternalId());
+
+        PlayerStatisticsDto.External.DefaultList statisticsList = new ObjectMapper().treeToValue(node, PlayerStatisticsDto.External.DefaultList.class);
+
+        if (statisticsList != null && !statisticsList.getResponse().isEmpty())
+            for (PlayerStatisticsDto.External.DefaultTeamList teamInfo : statisticsList.getResponse()) {
+                for (PlayerStatisticsDto.External.Default teamPlayersInfo : teamInfo.getPlayers()) {
+                    for (PlayerStatisticsDto.External.Players playerInfo : teamPlayersInfo.getPlayers()) {
+                        PlayerStatisticsEntity statistics = PLAYER_STATISTICS_MAPPER.toPlayerStatisticsEntity(playerInfo.getStatistics().get(0));
+
+                        statistics.setFixture(fixture);
+
+                        PlayerEntity player = playerRepository.findOneByExternalId(playerInfo.getPlayer().getId())
+                                .orElseThrow(() -> new NotFoundException(PLAYER_NOT_FOUND));
+
+                        statistics.setPlayer(player);
+
+                        playerStatisticsRepository.saveAndFlush(statistics);
+                    }
+                }
             }
     }
 }
