@@ -24,4 +24,5 @@ public class Constants {
     public static final String NOT_ENOUGH_CASH_CONFLICT = "Not enough cash to purchase.";
     public static final String ROUND_NOT_OPEN_CONFLICT = "Round is not opened, lineup modifying rejected.";
     public static final String PLAYER_DONT_PURCHASED_CONFLICT = "User dont have player with such id: ";
+    public static final String ROUND_STATUS_CONFLICT = "Round with such status could not be processed.";
 }

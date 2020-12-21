@@ -2,6 +2,7 @@ package by.guz.fantasy.football.service;
 
 import by.guz.fantasy.football.dto.PlayerDto;
 import by.guz.fantasy.football.dto.UserDto;
+import by.guz.fantasy.football.dto.UserStatisticsDto;
 
 import java.util.List;
 
@@ -17,4 +18,5 @@ public interface UserService {
 
     void sellPlayerToCurrentUser(Long playerId);
 
+    List<UserStatisticsDto.Response.Default> getAllUserStatistics();
 }

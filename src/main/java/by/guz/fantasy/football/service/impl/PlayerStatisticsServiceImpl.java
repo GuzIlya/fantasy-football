@@ -1,7 +1,8 @@
-package by.guz.fantasy.football.service;
+package by.guz.fantasy.football.service.impl;
 
 import by.guz.fantasy.football.dto.PlayerStatisticsDto;
 import by.guz.fantasy.football.repository.PlayerStatisticsRepository;
+import by.guz.fantasy.football.service.PlayerStatisticsService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

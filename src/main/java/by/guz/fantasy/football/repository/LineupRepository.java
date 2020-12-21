@@ -31,4 +31,10 @@ public interface LineupRepository extends JpaRepository<LineupEntity, Long> {
             "AND deleted_at IS NULL ",
             nativeQuery = true)
     Optional<LineupEntity> findByUserIdAndRoundId(@Param("userId") Long userId, @Param("roundId") Long roundId);
+
+    @Query(value = "SELECT * FROM lineup " +
+            "WHERE round_id = :roundId " +
+            "AND deleted_at IS NULL ",
+            nativeQuery = true)
+    List<LineupEntity> findAllByRoundId(@Param("roundId") Long roundId);
 }

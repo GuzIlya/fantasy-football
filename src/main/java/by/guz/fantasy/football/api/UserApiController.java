@@ -3,6 +3,7 @@ package by.guz.fantasy.football.api;
 import by.guz.fantasy.football.dto.LineupDto;
 import by.guz.fantasy.football.dto.PlayerDto;
 import by.guz.fantasy.football.dto.UserDto;
+import by.guz.fantasy.football.dto.UserStatisticsDto;
 import by.guz.fantasy.football.service.LineupService;
 import by.guz.fantasy.football.service.PlayerService;
 import by.guz.fantasy.football.service.UserService;
@@ -30,6 +31,12 @@ public class UserApiController {
     public ResponseEntity<List<UserDto.Response.Default>> getAllUsers() {
         List<UserDto.Response.Default> users = userService.getAllUsers();
         return new ResponseEntity<>(users, OK);
+    }
+
+    @GetMapping("/statistics")
+    public ResponseEntity<List<UserStatisticsDto.Response.Default>> getAllUserStatistics() {
+        List<UserStatisticsDto.Response.Default> userStatistics = userService.getAllUserStatistics();
+        return new ResponseEntity<>(userStatistics, OK);
     }
 
     @GetMapping("/{userId}")

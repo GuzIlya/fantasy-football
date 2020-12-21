@@ -7,5 +7,6 @@ import java.util.List;
 public interface FixtureService {
 
     List<FixtureDto.Response.Default> getAllFixtures();
+
     FixtureDto.Response.Default getFixtureById(Long fixtureId);
 }

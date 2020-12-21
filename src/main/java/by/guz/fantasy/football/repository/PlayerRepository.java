@@ -21,6 +21,14 @@ public interface PlayerRepository extends JpaRepository<PlayerEntity, Long>, Jpa
             nativeQuery = true)
     List<PlayerEntity> findAllByUserId(@Param("userId") Long userId);
 
+
+    @Query(value = "SELECT * FROM player " +
+            "LEFT JOIN lineup_player lp ON player.id = lp.player_id " +
+            "WHERE lp.lineup_id = :lineupId " +
+            "AND deleted_at IS NULL ",
+            nativeQuery = true)
+    List<PlayerEntity> findAllByLineupId(@Param("lineupId") Long lineupId);
+
     @Query(value = "SELECT(EXISTS(SELECT * FROM player " +
             "LEFT JOIN user_player up ON player.id = up.player_id " +
             "WHERE up.user_id = :userId " +
