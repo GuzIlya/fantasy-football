@@ -5,10 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 
 public enum UserStatisticsDto {;
-    private interface Id { @Positive Long getId(); }
     private interface User { @NotNull UserDto.Response.Default getUser(); }
     private interface Rank { Long getRank(); }
     private interface PrevRank { Long getPrevRank(); }
@@ -19,8 +17,7 @@ public enum UserStatisticsDto {;
     public enum Response {;
 
         @Getter @Setter @NoArgsConstructor
-        public static class Default implements Id, User, Rank, PrevRank, Pts, PrevPts, RoundParticipated {
-            Long id;
+        public static class Default implements User, Rank, PrevRank, Pts, PrevPts, RoundParticipated {
             UserDto.Response.Default user;
             Long rank;
             Long prevRank;

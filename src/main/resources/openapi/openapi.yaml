@@ -133,6 +133,26 @@ paths:
         "401":
           $ref: "#/components/responses/Unauthorized"
 
+  /api/v1/users/statistics:
+    get:
+      operationId: getAllUserStatistics
+      summary: Получение таблицы лидеров
+      security:
+        - bearerAuth: []
+      tags:
+        - Users
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserStatistics"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
   /api/v1/users/{userId}:
     parameters:
       - $ref: "#/components/parameters/UserIdPathParameter"
@@ -452,6 +472,106 @@ paths:
           $ref: "#/components/responses/Unauthorized"
 
 
+  /api/v1/rounds/{roundId}:
+    parameters:
+      - $ref: "#/components/parameters/RoundIdPathParameter"
+    get:
+      operationId: getRoundById
+      summary: Получение тура по ID
+      security:
+        - bearerAuth: []
+      tags:
+        - Rounds
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Round"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/v1/rounds/{roundId}/open:
+    parameters:
+      - $ref: "#/components/parameters/RoundIdPathParameter"
+    post:
+      operationId: setRoundOpened
+      summary: Открытие регистрации составов тура
+      security:
+        - bearerAuth: []
+      tags:
+        - Rounds
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Round"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/v1/rounds/{roundId}/close:
+    parameters:
+      - $ref: "#/components/parameters/RoundIdPathParameter"
+    post:
+      operationId: setRoundClosed
+      summary: Закрытие регистрации составов тура
+      security:
+        - bearerAuth: []
+      tags:
+        - Rounds
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Round"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/v1/rounds/{roundId}/finish:
+    parameters:
+      - $ref: "#/components/parameters/RoundIdPathParameter"
+    post:
+      operationId: setRoundFinished
+      summary: Завершение тура
+      security:
+        - bearerAuth: []
+      tags:
+        - Rounds
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Round"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/v1/rounds/{roundId}/process:
+    parameters:
+      - $ref: "#/components/parameters/RoundIdPathParameter"
+    post:
+      operationId: setRoundProcessed
+      summary: Обработка тура
+      security:
+        - bearerAuth: []
+      tags:
+        - Rounds
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Round"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
   ##################################################
   # Fixtures API
   ##################################################
@@ -658,6 +778,25 @@ components:
         updatedAt:
           type: string
           format: "date-time"
+
+    UserStatistics:
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        rank:
+          type: string
+          format: int64
+        prevRank:
+          type: string
+          format: int64
+        pts:
+          type: number
+          format: double
+        prevPts:
+          type: number
+          format: double
+        roundParticipated:
+          type: integer
 
     UserRole:
       type: string
@@ -1029,6 +1168,14 @@ components:
     FixtureIdPathParameter:
       in: path
       name: fixtureId
+      required: true
+      schema:
+        type: integer
+        format: int64
+
+    RoundIdPathParameter:
+      in: path
+      name: roundId
       required: true
       schema:
         type: integer

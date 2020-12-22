@@ -10,5 +10,11 @@ public interface RoundService {
 
     RoundDto.Response.Default getRoundById(Long roundId);
 
+    void setRoundOpened(Long roundId);
+
+    void setRoundClosed(Long roundId);
+
+    void setRoundFinished(Long roundId);
+
     void setRoundProcessed(Long roundId);
 }

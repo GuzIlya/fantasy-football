@@ -49,6 +49,51 @@ public class RoundServiceImpl implements RoundService {
 
     @Override
     @Transactional
+    public void setRoundOpened(Long roundId) {
+
+        RoundEntity existing = roundRepository.findById(roundId)
+                .orElseThrow(() -> new NotFoundException(ROUND_NOT_FOUND));
+
+        if (existing.getStatus() != RoundStatusEntity.UPCOMING) {
+            throw new ConflictException(ROUND_STATUS_CONFLICT);
+        }
+
+        existing.setStatus(RoundStatusEntity.OPEN);
+        roundRepository.saveAndFlush(existing);
+    }
+
+    @Override
+    @Transactional
+    public void setRoundClosed(Long roundId) {
+
+        RoundEntity existing = roundRepository.findById(roundId)
+                .orElseThrow(() -> new NotFoundException(ROUND_NOT_FOUND));
+
+        if (existing.getStatus() != RoundStatusEntity.OPEN) {
+            throw new ConflictException(ROUND_STATUS_CONFLICT);
+        }
+
+        existing.setStatus(RoundStatusEntity.CLOSED);
+        roundRepository.saveAndFlush(existing);
+    }
+
+    @Override
+    @Transactional
+    public void setRoundFinished(Long roundId) {
+
+        RoundEntity existing = roundRepository.findById(roundId)
+                .orElseThrow(() -> new NotFoundException(ROUND_NOT_FOUND));
+
+        if (existing.getStatus() != RoundStatusEntity.CLOSED) {
+            throw new ConflictException(ROUND_STATUS_CONFLICT);
+        }
+
+        existing.setStatus(RoundStatusEntity.FINISHED);
+        roundRepository.saveAndFlush(existing);
+    }
+
+    @Override
+    @Transactional
     public void setRoundProcessed(Long roundId) {
         RoundEntity existing = roundRepository.findById(roundId)
                 .orElseThrow(() -> new NotFoundException(ROUND_NOT_FOUND));
