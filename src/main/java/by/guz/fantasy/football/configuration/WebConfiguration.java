@@ -13,7 +13,7 @@ public class WebConfiguration {
     public CorsFilter corsFilter() {
         var source = new UrlBasedCorsConfigurationSource();
         var corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("*");
+        corsConfiguration.addAllowedOriginPattern("*");
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addExposedHeader("Authorization");

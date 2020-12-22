@@ -1,4 +1,7 @@
 openapi: 3.0.0
+servers:
+  - url: http://localhost:8080
+    description: Localhost
 info:
   version: 1.0.0
   title: Fantasy Football API
@@ -17,7 +20,7 @@ info:
 
     # Postman
 
-    [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/ce06ca2f93f8df3534fa)
+    [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/26138470391fcea924e3)
 
 
     *Postman-коллекция может не полностью соответствовать пердставленому ниже (лень обновлять ссылку).*
