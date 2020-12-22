@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserStatisticsDto.Response.Default> getAllUserStatistics() {
-        return userStatisticsRepository.findAll()
+        return userStatisticsRepository.findAllOrderedByRank()
                 .stream()
                 .map(USER_STATISTICS_MAPPER::toUserStatisticsDtoDefault)
                 .collect(Collectors.toList());

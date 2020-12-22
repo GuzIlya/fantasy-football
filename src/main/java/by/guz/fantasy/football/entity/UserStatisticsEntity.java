@@ -3,6 +3,7 @@ package by.guz.fantasy.football.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -34,11 +35,11 @@ public class UserStatisticsEntity extends AbstractBaseEntity {
     @Column(name = "prev_rank")
     private Long prevRank;
 
-    @Column(name = "pts")
-    private Double pts;
+    @Column(name = "pts", columnDefinition = "NUMERIC(20,2)")
+    private BigDecimal pts;
 
-    @Column(name = "prev_pts")
-    private Double prevPts;
+    @Column(name = "prev_pts", columnDefinition = "NUMERIC(20,2)")
+    private BigDecimal prevPts;
 
     @Column(name = "rounds_participated")
     private Integer roundsParticipated;

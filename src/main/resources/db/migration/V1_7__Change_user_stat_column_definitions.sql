@@ -1,0 +1,3 @@
+ALTER TABLE user_statistics
+    ALTER COLUMN pts TYPE NUMERIC(20, 2),
+    ALTER COLUMN prev_pts TYPE NUMERIC(20, 2);

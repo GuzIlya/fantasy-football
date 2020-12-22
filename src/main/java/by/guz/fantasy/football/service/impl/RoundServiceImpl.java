@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -104,38 +105,36 @@ public class RoundServiceImpl implements RoundService {
 
         existing.setStatus(RoundStatusEntity.PROCESSED);
 
-
         Map<Long, UserStatisticsEntity> userStatistics = userStatisticsRepository.findAll()
                 .stream()
+                .peek(v -> {
+                    v.setPrevRank(v.getRank());
+                    v.setPrevPts(v.getPts());
+                })
                 .collect(Collectors.toMap(UserStatisticsEntity::getUserId, statistics -> statistics));
-
-        userStatistics.forEach((k, v) -> {
-            v.setPrevRank(v.getRank());
-            v.setPrevPts(v.getPts());
-        });
-
 
         List<LineupEntity> lineups = lineupRepository.findAllByRoundId(roundId);
 
         for (LineupEntity lineup : lineups) {
             List<PlayerEntity> players = playerRepository.findAllByLineupId(lineup.getId());
 
-            Double pts = 0.0;
+            BigDecimal pts = BigDecimal.ZERO;
 
             for (PlayerEntity player : players) {
                 Optional<PlayerStatisticsEntity> playerStatistics = playerStatisticsRepository.findOneByRoundIdAndPlayerId(roundId, player.getId());
                 if (playerStatistics.isPresent()) {
-                    pts += Double.parseDouble(playerStatistics.get().getRating()) - 6.0d;
+                    if (playerStatistics.get().getRating() != null)
+                        pts = pts.add(BigDecimal.valueOf(Double.parseDouble(playerStatistics.get().getRating()) - 6.0d));
                 }
             }
 
             if (userStatistics.containsKey(lineup.getUserId())) {
-                userStatistics.get(lineup.getUserId()).setPts(userStatistics.get(lineup.getUserId()).getPts() + pts);
+                userStatistics.get(lineup.getUserId()).setPts(userStatistics.get(lineup.getUserId()).getPts().add(pts));
                 userStatistics.get(lineup.getUserId()).setRoundsParticipated(userStatistics.get(lineup.getUserId()).getRoundsParticipated() + 1);
             } else {
                 userStatistics.put(lineup.getUserId(), UserStatisticsEntity.builder()
                         .user(UserEntity.builder().id(lineup.getUserId()).build())
-                        .prevPts(0.0)
+                        .prevPts(BigDecimal.ZERO)
                         .pts(pts)
                         .roundsParticipated(1)
                         .build());
@@ -146,20 +145,34 @@ public class RoundServiceImpl implements RoundService {
         List<UserStatisticsEntity> userStatisticsEntityList = userStatistics.entrySet()
                 .stream()
                 .sorted((t1, t2) -> {
-                    if (t1.getValue().getPts() > t2.getValue().getPts())
-                        return -1;
-                    else if (t1.getValue().getPts() < t2.getValue().getPts())
-                        return 1;
-                    return 0;
+                    switch (t1.getValue().getPts().compareTo(t2.getValue().getPts())) {
+                        case -1:
+                            return 1;
+                        case 1:
+                            return -1;
+                        default:
+                            return t1.getValue().getRoundsParticipated().compareTo(t2.getValue().getRoundsParticipated());
+                    }
                 })
                 .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
 
-        Long rank = 1L;
+        long rank = 0L;
+        int sameRankCount = 0;
+        UserStatisticsEntity previous = null;
         for (UserStatisticsEntity userStatisticsItem : userStatisticsEntityList) {
+
+            if (previous != null && userStatisticsItem.getPts().equals(previous.getPts()) && userStatisticsItem.getRoundsParticipated().equals(previous.getRoundsParticipated())) {
+                sameRankCount++;
+            } else {
+                rank += 1 + sameRankCount;
+                sameRankCount = 0;
+            }
+
             userStatisticsItem.setRank(rank);
-            rank++;
             userStatisticsRepository.saveAndFlush(userStatisticsItem);
+
+            previous = userStatisticsItem;
         }
 
         roundRepository.saveAndFlush(existing);
