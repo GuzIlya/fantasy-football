@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -145,14 +146,9 @@ public class RoundServiceImpl implements RoundService {
         List<UserStatisticsEntity> userStatisticsEntityList = userStatistics.entrySet()
                 .stream()
                 .sorted((t1, t2) -> {
-                    switch (t1.getValue().getPts().compareTo(t2.getValue().getPts())) {
-                        case -1:
-                            return 1;
-                        case 1:
-                            return -1;
-                        default:
-                            return t1.getValue().getRoundsParticipated().compareTo(t2.getValue().getRoundsParticipated());
-                    }
+                    Comparator<UserStatisticsEntity> c = Comparator.comparing(UserStatisticsEntity::getPts)
+                            .thenComparing(UserStatisticsEntity::getRoundsParticipated, Comparator.reverseOrder());
+                    return c.compare(t2.getValue(), t1.getValue());
                 })
                 .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
